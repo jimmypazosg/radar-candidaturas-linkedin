@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import asyncio
 import base64
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import html as html_lib
 import json
 from pathlib import Path
 import re
+import shutil
 import threading
 from typing import Any
 from urllib.parse import unquote
@@ -63,6 +64,13 @@ class ActualizarPayload(BaseModel):
     estado: str | None = None
     notas: str | None = None
     motivo_descarte: str | None = None
+
+
+class LimpiarPayload(BaseModel):
+    dry_run: bool = True
+    dias_retencion_descartadas: int = Field(default=7, ge=5, le=365)
+    limpiar_aplicadas_antiguas: bool = False
+    dias_retencion_aplicadas: int = Field(default=90, ge=30, le=365)
 
 
 def _ensure_storage() -> None:
@@ -700,6 +708,124 @@ async def get_cv_pdf(item_id: str) -> FileResponse:
         media_type="application/pdf",
         filename=pdf_path.name,
         content_disposition_type="inline",
+    )
+
+
+def _parse_iso_date(raw: str) -> date | None:
+    text = (raw or "").strip()[:10]
+    if not text:
+        return None
+    try:
+        return date.fromisoformat(text)
+    except ValueError:
+        return None
+
+
+def _salidas_subfolder(ruta_pdf_cv: str) -> Path | None:
+    ruta_rel = (ruta_pdf_cv or "").strip()
+    if not ruta_rel:
+        return None
+    salidas_root = SALIDAS_DIR.resolve()
+    target = (BASE_DIR / ruta_rel).resolve()
+    if not target.is_relative_to(salidas_root) or target == salidas_root:
+        return None
+    rel_parts = target.relative_to(salidas_root).parts
+    return (salidas_root / rel_parts[0]) if rel_parts else None
+
+
+def _dir_size_bytes(folder: Path) -> int:
+    return sum(f.stat().st_size for f in folder.rglob("*") if f.is_file())
+
+
+@app.post("/api/limpiar")
+async def post_limpiar(payload: LimpiarPayload) -> JSONResponse:
+    """Depura candidaturas descartadas por fases y carpetas residuales en salidas/."""
+    candidaturas = _load_candidaturas()
+    today = date.today()
+    cutoff_descartadas = today - timedelta(days=payload.dias_retencion_descartadas)
+    cutoff_aplicadas = today - timedelta(days=payload.dias_retencion_aplicadas)
+
+    kept: list[dict[str, Any]] = []
+    compactadas_descartadas = 0
+    eliminadas_descartadas = 0
+    pdfs_aplicadas_limpiados = 0
+    bytes_json_ahorrados = 0
+    json_modified = False
+
+    for item in candidaturas:
+        estado = item.get("estado", "pendiente_ia")
+
+        if estado == "descartada":
+            item_date = _parse_iso_date(item.get("fecha", ""))
+            has_url = bool((item.get("url_oferta") or "").strip())
+            is_expired = (item_date is not None and item_date < cutoff_descartadas) or not has_url
+
+            if is_expired:
+                eliminadas_descartadas += 1
+                bytes_json_ahorrados += len(json.dumps(item, ensure_ascii=False).encode("utf-8"))
+                json_modified = True
+                continue
+
+            # Fase 1: dentro de la ventana de seguridad (5-7 días), conservar solo lo mínimo para deduplicar Gmail.
+            updated = dict(item)
+            desc = updated.get("descripcion") or ""
+            if desc:
+                bytes_json_ahorrados += len(desc.encode("utf-8"))
+                updated["descripcion"] = ""
+                compactadas_descartadas += 1
+                json_modified = True
+            if updated.get("ruta_pdf_cv"):
+                updated["ruta_pdf_cv"] = ""
+                json_modified = True
+            kept.append(updated)
+            continue
+
+        if estado == "aplicada" and payload.limpiar_aplicadas_antiguas:
+            ref_date = _parse_iso_date(item.get("fecha_aplicacion") or item.get("fecha", ""))
+            if ref_date is not None and ref_date < cutoff_aplicadas and item.get("ruta_pdf_cv"):
+                updated = dict(item)
+                updated["ruta_pdf_cv"] = ""
+                pdfs_aplicadas_limpiados += 1
+                json_modified = True
+                kept.append(updated)
+                continue
+
+        kept.append(item)
+
+    referenced_folders = {
+        folder
+        for item in kept
+        if (folder := _salidas_subfolder(item.get("ruta_pdf_cv", ""))) is not None
+    }
+
+    carpetas_a_borrar: list[Path] = []
+    bytes_salidas_ahorrados = 0
+    if SALIDAS_DIR.exists():
+        for entry in SALIDAS_DIR.iterdir():
+            if entry.is_dir() and entry.resolve() not in referenced_folders:
+                carpetas_a_borrar.append(entry)
+                bytes_salidas_ahorrados += _dir_size_bytes(entry)
+
+    if not payload.dry_run:
+        if json_modified:
+            _save_candidaturas(kept)
+        for folder in carpetas_a_borrar:
+            shutil.rmtree(folder, ignore_errors=True)
+
+    return JSONResponse(
+        {
+            "ok": True,
+            "dry_run": payload.dry_run,
+            "resumen": {
+                "compactadas_descartadas": compactadas_descartadas,
+                "eliminadas_descartadas": eliminadas_descartadas,
+                "carpetas_eliminadas": len(carpetas_a_borrar),
+                "pdfs_aplicadas_limpiados": pdfs_aplicadas_limpiados,
+                "bytes_liberados": bytes_json_ahorrados + bytes_salidas_ahorrados,
+            },
+            "candidaturas": kept if not payload.dry_run else candidaturas,
+            "conteos": _build_counts(kept if not payload.dry_run else candidaturas),
+        }
     )
 
 
