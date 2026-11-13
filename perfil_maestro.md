@@ -93,21 +93,25 @@ Cuenta con **más de 6 años de experiencia trabajando 100 % en remoto** para **
 
 ### Criterios de Viabilidad y Descarte Automático
 1. **Descarte automático (`Descartada`):**
-   - Becas, prácticas universitarias o perfiles junior/entry-level.
-   - Puestos **100 % presenciales** o híbridos exigentes **fuera de Salamanca** (ej. Madrid, Barcelona, Valencia sin remoto) — salvo mención explícita de teletrabajo amplio o salario excepcional que compense (regla base: descartar si es presencial fuera de Salamanca con salario bajo o estándar).
+   - Becas, prácticas universitarias o perfiles puramente junior/sin experiencia.
+   - Puestos **100 % presenciales** o híbridos exigentes **fuera de Salamanca** (ej. Madrid, Barcelona, Valencia sin remoto) cuando el salario sea bajo o estándar y no compense traslado.
    - Stacks núcleo incompatibles sin solapamiento web/UX (ej. SAP ABAP, COBOL, C++ embebido, Java Spring puro backend sin frontend, .NET desktop legacy, iOS/Android nativo exclusivo, DevOps/SRE puro sin capa web/producto).
-   - Ofertas con salario manifiestamente inferior al nivel senior en España (< 30.000 € brutos/año para jornada completa).
+   - Ofertas a **jornada completa** con salario manifiestamente precario (**< 22.000 € brutos/año**), o condiciones abusivas/desproporcionadas. *(Nota: si es media jornada o dedicación de mañanas, evaluar proporcionalmente).*
 2. **Viabilidad Media (`Media`):**
    - Roles Frontend que pidan React/Vue/Angular/TypeScript avanzado como requisito principal cuando el fuerte demostrable está en HTML5/CSS3/JS/jQuery/WordPress/UI, pero valoran mucho Design Systems, UX Engineering y 20 años de base sólida.
-   - Híbridos muy puntuales o puestos de transición hacia Producto/IA donde falte algún framework específico pero el perfil sume alto valor diferencial.
+   - Ofertas **100 % remotas** con presupuesto moderado (**24.000 € – 32.000 € brutos/año** en España) o puestos de transición hacia Producto/IA, siempre que tengan horario flexible o compatibilidad de mañanas.
+   - Híbridos muy puntuales o freelance/part-time compatibles con el horario de mañana.
 3. **Viabilidad Alta (`Alta`):**
-   - 100 % remoto (España/UE/EE. UU.) o Salamanca, stack alineado (UX/UI + HTML5/CSS3/JS, Design Systems, WordPress/PHP, CRO/SEO, IA/Automatización), nivel Senior/Lead.
+   - 100 % remoto (España/UE/EE. UU.) o Salamanca, stack alineado (UX/UI + HTML5/CSS3/JS, Design Systems, WordPress/PHP, CRO/SEO, IA/Automatización), nivel Mid-Senior/Senior/Lead.
+   - Proyectos **part-time / freelance / jornada de mañana** (08:30–16:30 CET) altamente compatibles con el turno actual de tarde/noche en EE. UU.
+
+### Disponibilidad Horaria y Situación Actual Base (para evaluación y formularios)
+- **Ventana horaria clave:** Al trabajar en remoto para EE. UU. (**Land Gorilla Inc.**, California), la jornada actual comienza a las **17:00 – 18:00 hora de Madrid (CET/CEST)**, dejando **toda la mañana libre (aprox. 08:30 – 16:30/17:00)** para proyectos, contratos part-time/freelance o jornadas flexibles en España/Europa, además de disponibilidad para valorar un cambio full-time si la propuesta compensa.
+- **Situación actual:** En activo en **Land Gorilla Inc.** (producto SaaS estadounidense, modalidad 100 % remota) compaginado con consultoría técnica independiente en arquitectura web y automatización IA (`apisdev.com`).
+- **Ubicación e idiomas:** Residencia estable en **Salamanca, España**, experiencia contrastada colaborando en inglés con equipos internacionales y disponibilidad negociable según modalidad.
 
 ### Referencia Salarial en España (€ brutos/año)
+- **Mercado nacional España (flexible / presupuestos ajustados pero dignos):** 26.000 € – 38.000 € brutos/año (aceptando valorar desde 24.000 € si es 100 % remoto, flexible o compatible de mañanas).
 - **Mercado nacional España (Senior Frontend / UX Engineer / WordPress Lead):** 38.000 € – 52.000 € brutos/año.
 - **Empresas internacionales remotas / SaaS / Design Engineer Senior:** 48.000 € – 65.000 €+ brutos/año.
-- **Suelo mínimo aceptable:** 36.000 € brutos/año (salvo proyectos part-time/freelance con tarifa equivalente).
-
-### Situación Actual Base (para formularios)
-- Actualmente en activo en **Land Gorilla Inc.** (producto SaaS estadounidense, modalidad 100 % remota) compaginado con consultoría técnica independiente en arquitectura web y automatización IA (`apisdev.com`).
-- Residencia estable en **Salamanca, España**, con plena disponibilidad para trabajo 100 % remoto, experiencia contrastada colaborando en inglés con equipos internacionales y preaviso estándar negociable.
+- **Part-time / Mañanas / Freelance compatible:** proporcional a dedicación (orientativo 20 € – 35 €/hora o según alcance).

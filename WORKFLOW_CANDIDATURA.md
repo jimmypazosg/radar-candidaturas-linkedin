@@ -22,7 +22,7 @@ Descartar inmediatamente y rellenar `motivo_descarte` de forma concreta cuando o
 - Becas, prácticas universitarias o perfiles junior/entry-level.
 - Puestos **100 % presenciales** (o híbridos de alta presencialidad) **fuera de Salamanca** con salario bajo o estándar que no justifique traslado.
 - Stacks técnicos incompatibles sin solapamiento real con el perfil (ej. SAP/ABAP, COBOL, C++ embebido, desarrollo móvil nativo exclusivo, Java/Spring o .NET puro sin componente UX/UI/Frontend/Web).
-- Ofertas con banda salarial publicada por debajo de **30.000 € brutos/año** para jornada completa.
+- Ofertas a **jornada completa** con banda salarial publicada manifiestamente precaria (**< 22.000 € brutos/año**). *(No descartar automáticamente presupuestos moderados de 24.000 € – 35.000 € ni opciones part-time/mañanas si son 100 % remotos y compatibles con la disponibilidad de mañana de 08:30 a 16:30/17:00 CET).*
 - Ofertas sin información suficiente por authwall que el usuario aún no haya completado (si `descripcion` indica bloqueo de login, dejar constancia o pedir texto antes de descartar si la empresa/puesto prometen).
 
 ### Ofertas viables (`viabilidad = "Alta"` o `"Media"`)
@@ -35,13 +35,14 @@ Descartar inmediatamente y rellenar `motivo_descarte` de forma concreta cuando o
 Por cada oferta viable, ejecutar en orden:
 
 1. **Calcular horquilla salarial (`horquilla_salarial`)** en **€ brutos/año** realista para España en 2026:
-   - Nacional España (Senior): orientativamente `38.000 € – 52.000 € brutos/año` según tamaño de empresa y responsabilidad.
+   - Nacional España (presupuesto ajustado/flexible o entrada): `26.000 € – 36.000 € brutos/año` (o proporcional si es part-time/mañanas).
+   - Nacional España (Senior): `38.000 € – 52.000 € brutos/año` según tamaño de empresa y responsabilidad.
    - Internacional / SaaS remoto: `48.000 € – 65.000 € brutos/año`.
    - Si la oferta publica una horquilla superior compatible, alinear la propuesta con ella sin infravalorarse.
 
 2. **Redactar respuesta de situación actual (`respuesta_situacion`)**:
    - Texto breve en primera persona (3–5 líneas) listo para pegar en formularios de LinkedIn/ATS:
-     - Explica la situación actual en activo en **Land Gorilla Inc.** (entorno SaaS B2B internacional en modalidad 100 % remota) y consultoría web/IA propia (`apisdev.com`).
+     - Explica la situación actual en activo en **Land Gorilla Inc.** (entorno SaaS B2B internacional en modalidad 100 % remota, horario EE. UU. a partir de las 17:00–18:00 hora de Madrid, con disponibilidad completa por las mañanas) y consultoría web/IA propia (`apisdev.com`).
      - Indica residencia estable en Salamanca (España), disponibilidad para remoto 100 %, nivel profesional en inglés y español, y motivación alineada con la empresa/vacante.
 
 3. **Redactar carta de presentación (`carta_presentacion`)**:
