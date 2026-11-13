@@ -150,6 +150,7 @@ Abre el dashboard en tu navegador:
 | `POST` | `/api/escanear-gmail` | Busca alertas recientes de LinkedIn en Gmail y extrae detalles con Playwright. |
 | `POST` | `/api/oferta-manual` | Registra una nueva oferta manualmente en estado `pendiente_ia`. |
 | `POST` | `/api/actualizar/{item_id}` | Actualiza `estado`, `notas` o `motivo_descarte` de una candidatura. |
+| `POST` | `/api/limpiar` | Depura descartadas por fases (`dry_run` + retención) y carpetas huérfanas en `salidas/`. |
 | `GET` | `/api/cv/{item_id}` | Sirve el archivo `CV_Jimmy_Pazos.pdf` asociado a la candidatura. |
 
 ---
