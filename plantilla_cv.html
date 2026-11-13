@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV — Jimmy Pazos García</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #e5e7eb;
+      font-family: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      color: #1f2937;
+      -webkit-font-smoothing: antialiased;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto;
+      padding: 15mm 16mm 14mm;
+      background: #ffffff;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media print {
+      html,
+      body {
+        background: #ffffff;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Cabecera editorial */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #1d4ed8;
+    }
+
+    .header-left h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #111827;
+      line-height: 1.15;
+    }
+
+    .header-left .role {
+      margin: 4px 0 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1d4ed8;
+    }
+
+    .header-right {
+      text-align: right;
+      font-size: 10.5px;
+      line-height: 1.5;
+      color: #4b5563;
+      white-space: nowrap;
+    }
+
+    .header-right a {
+      color: #111827;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Resumen con filete lateral */
+    .summary {
+      margin: 12px 0 16px;
+      padding: 3px 0 3px 12px;
+      border-left: 2.5px solid #1d4ed8;
+      font-size: 11px;
+      line-height: 1.52;
+      color: #374151;
+    }
+
+    .summary strong {
+      color: #111827;
+      font-weight: 600;
+    }
+
+    /* Cuerpo 2 columnas */
+    .columns {
+      display: grid;
+      grid-template-columns: 60mm 1fr;
+      gap: 18px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .sidebar {
+      border-right: 1px solid #e5e7eb;
+      padding-right: 14px;
+    }
+
+    .section-title {
+      margin: 0 0 9px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #111827;
+    }
+
+    .sidebar-group {
+      margin-bottom: 13px;
+    }
+
+    .sidebar-group h3 {
+      margin: 0 0 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+
+    .sidebar-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 10.3px;
+      line-height: 1.52;
+      color: #374151;
+    }
+
+    .sidebar-list li {
+      margin-bottom: 2px;
+    }
+
+    .edu-item {
+      margin-bottom: 10px;
+    }
+
+    .edu-item .edu-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.35;
+    }
+
+    .edu-item .edu-meta {
+      font-size: 10px;
+      color: #6b7280;
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    /* Experiencia profesional */
+    .exp-item {
+      margin-bottom: 15px;
+    }
+
+    .exp-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .exp-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .exp-role {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.3;
+    }
+
+    .exp-date {
+      font-size: 10px;
+      font-weight: 600;
+      color: #1d4ed8;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .exp-company {
+      margin: 2px 0 6px;
+      font-size: 10.5px;
+      color: #4b5563;
+      font-weight: 500;
+    }
+
+    .exp-bullets {
+      margin: 0;
+      padding-left: 14px;
+      font-size: 10.6px;
+      line-height: 1.48;
+      color: #374151;
+    }
+
+    .exp-bullets li {
+      margin-bottom: 4.5px;
+    }
+
+    .exp-bullets li:last-child {
+      margin-bottom: 0;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 9.2px;
+      font-weight: 600;
+      color: #1e3a8a;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 3px;
+      padding: 1.5px 5px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="header-left">
+        <h1>Jimmy Pazos García</h1>
+        <!-- ADAPTAR: Titular orientado al puesto objetivo -->
+        <p class="role">Senior UX/UI Design Technologist &amp; Frontend Developer</p>
+      </div>
+      <div class="header-right">
+        <div>Salamanca, España</div>
+        <div>+34 641 019 380 · <a href="mailto:hola@jimmypazos.es">hola@jimmypazos.es</a></div>
+        <div><a href="https://jimmypazos.es">jimmypazos.es</a> · <a href="https://apisdev.com">apisdev.com</a></div>
+      </div>
+    </header>
+
+    <!-- ADAPTAR: Resumen ejecutivo de 3-4 líneas alineado con los requisitos clave de la oferta -->
+    <section class="summary">
+      Especialista híbrido entre diseño de interfaz (UX/UI) y desarrollo frontend con <strong>más de 20 años de trayectoria</strong> construyendo productos digitales y plataformas web. Experto en traducir sistemas visuales de Figma a código <strong>HTML5, CSS3 y JavaScript</strong> limpio, accesible y de alto rendimiento, eliminando la fricción entre diseño e ingeniería. <strong>Más de 6 años trabajando 100 % en remoto</strong> en entorno SaaS internacional.
+    </section>
+
+    <div class="columns">
+      <aside class="sidebar">
+        <h2 class="section-title">Especialidades</h2>
+
+        <!-- ADAPTAR: Reordenar y priorizar bloques según la vacante -->
+        <div class="sidebar-group">
+          <h3>Diseño UI/UX &amp; Producto</h3>
+          <ul class="sidebar-list">
+            <li>Figma &amp; Prototipado UI</li>
+            <li>Design Systems &amp; Componentes</li>
+            <li>Consistencia Visual &amp; Handoff</li>
+            <li>Adobe Photoshop</li>
+            <li>Optimización SEO, CRO &amp; AEO</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-group">
+          <h3>Frontend Engineering</h3>
+          <ul class="sidebar-list">
+            <li>HTML5 Semántico &amp; CSS3</li>
+            <li>JavaScript (ES6+)</li>
+            <li>AJAX &amp; jQuery</li>
+            <li>Maquetación Responsive</li>
+            <li>Rendimiento &amp; Core Web Vitals</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-group">
+          <h3>CMS, Backend &amp; IA</h3>
+          <ul class="sidebar-list">
+            <li>WordPress a medida</li>
+            <li>PHP &amp; MySQL</li>
+            <li>Flujos IA &amp; LLMs (Ollama, APIs)</li>
+            <li>Automatización (n8n)</li>
+            <li>Linux, Docker &amp; Nginx</li>
+          </ul>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 14px;">Idiomas</h2>
+        <div class="sidebar-group">
+          <ul class="sidebar-list">
+            <li><strong>Español:</strong> Nativo</li>
+            <li><strong>Inglés:</strong> Profesional (uso diario en equipo SaaS EE. UU.)</li>
+          </ul>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 14px;">Educación</h2>
+        <div class="edu-item">
+          <div class="edu-title">Técnico en Computación y Sistemas</div>
+          <div class="edu-meta">IST Perú Pacífico, Lima · 1998 – 2001</div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-title">Especialización Webmaster</div>
+          <div class="edu-meta">AccesoPeru.com Escuela · 1999</div>
+        </div>
+      </aside>
+
+      <section>
+        <h2 class="section-title">Experiencia Profesional</h2>
+
+        <!-- ADAPTAR: Destacar logros y keywords relevantes para la oferta sin inventar experiencia -->
+        <article class="exp-item">
+          <div class="exp-head">
+            <h3 class="exp-role">Frontend &amp; Web Developer (Producto SaaS)</h3>
+            <span class="exp-date">+6 años · Dic 2021 – Actualidad</span>
+          </div>
+          <div class="exp-company">Land Gorilla Inc. · San Luis Obispo, CA (100 % Remoto)</div>
+          <ul class="exp-bullets">
+            <li>Traducción fiel de diseños gráficos, sistemas visuales y propuestas UI (Figma) en interfaces web funcionales, responsivas y mantenibles utilizando HTML5, CSS3, JavaScript y jQuery.</li>
+            <li>Desarrollo y evolución de plataformas digitales sobre WordPress a medida, PHP y MySQL, asegurando coherencia visual, velocidad de carga y estabilidad continua en producción.</li>
+            <li>Optimización de flujos digitales, embudos de conversión y recorridos de usuario en un entorno tecnológico SaaS B2B internacional y multidisciplinar.</li>
+          </ul>
+          <div class="tag-row">
+            <span class="tag">Figma → Código</span>
+            <span class="tag">HTML5 / CSS3 / JS</span>
+            <span class="tag">WordPress / PHP</span>
+            <span class="tag">SaaS 100 % Remoto</span>
+          </div>
+        </article>
+
+        <article class="exp-item">
+          <div class="exp-head">
+            <h3 class="exp-role">Consultor en Arquitectura Web &amp; Automatización IA</h3>
+            <span class="exp-date">2022 – Actualidad</span>
+          </div>
+          <div class="exp-company">Consultoría Independiente &amp; Proyectos Propios (apisdev.com) · Remoto</div>
+          <ul class="exp-bullets">
+            <li>Diseño e implementación integral de soluciones web orientadas a conversión (CRO), posicionamiento SEO/AEO, rendimiento técnico y arquitectura escalable.</li>
+            <li>Integración de flujos de Inteligencia Artificial con LLMs (Ollama, Open WebUI, APIs) y agentes de automatización (n8n) para optimizar procesos digitales y operativos.</li>
+            <li>Gestión autónoma de despliegues, seguridad y alta disponibilidad sobre infraestructura Linux, Docker y Nginx.</li>
+          </ul>
+          <div class="tag-row">
+            <span class="tag">SEO / CRO / AEO</span>
+            <span class="tag">LLMs &amp; n8n</span>
+            <span class="tag">Docker / Nginx</span>
+          </div>
+        </article>
+
+        <article class="exp-item">
+          <div class="exp-head">
+            <h3 class="exp-role">Web Designer &amp; Frontend Developer</h3>
+            <span class="exp-date">Trayectoria previa</span>
+          </div>
+          <div class="exp-company">Southern Cone Systems · Lima, Perú</div>
+          <ul class="exp-bullets">
+            <li>Diseño de interfaces web (UI) y maquetación frontend combinando criterio estético, arquitectura de información y código estándar accesible.</li>
+            <li>Colaboración directa en el ciclo completo de creación de sitios y aplicaciones web desde el concepto visual hasta su publicación y mantenimiento.</li>
+          </ul>
+        </article>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

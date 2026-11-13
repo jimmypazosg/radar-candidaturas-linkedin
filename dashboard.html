@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Radar Candidaturas · Jimmy Pazos</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a0c10;
+      --bg-glow-1: rgba(96, 118, 255, 0.17);
+      --bg-glow-2: rgba(45, 212, 191, 0.08);
+      --topbar-bg: rgba(10, 12, 16, 0.78);
+      --topbar-border: rgba(255, 255, 255, 0.06);
+      --card: #11151b;
+      --card-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.006));
+      --surface-2: #161b24;
+      --border: #1e242e;
+      --border-strong: #2b3340;
+      --divider: rgba(255, 255, 255, 0.06);
+      --text: #e8ecf3;
+      --text-dim: #aab3c2;
+      --muted: #7d8798;
+      --faint: #5a6474;
+      --accent: #7c93ff;
+      --accent-soft: rgba(124, 147, 255, 0.13);
+      --accent-border: rgba(124, 147, 255, 0.25);
+      --accent-glow: rgba(109, 132, 247, 0.8);
+      --btn-primary-from: #93a6ff;
+      --btn-primary-to: #6d84f7;
+      --btn-primary-text: #0a0f1e;
+      --ghost-bg: rgba(255, 255, 255, 0.025);
+      --ghost-hover: rgba(255, 255, 255, 0.065);
+      --ok: #4ade9b;
+      --ok-soft: rgba(74, 222, 155, 0.11);
+      --ok-border: rgba(74, 222, 155, 0.26);
+      --amber: #fbbf24;
+      --amber-soft: rgba(251, 191, 36, 0.11);
+      --amber-border: rgba(251, 191, 36, 0.28);
+      --danger: #ff7a7a;
+      --danger-text: #ffb9b9;
+      --danger-soft: rgba(255, 122, 122, 0.1);
+      --danger-border: rgba(255, 122, 122, 0.24);
+      --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 18px 44px -30px rgba(0, 0, 0, 0.95);
+      --brand-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 10px 24px -12px rgba(96, 118, 255, 0.9);
+      --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Inter", sans-serif;
+      --color-scrollbar-track: #11151b;
+      --color-scrollbar-thumb: #2b3340;
+      scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+      accent-color: var(--accent);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.48;
+      color: var(--text);
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(900px 520px at 10% -12%, var(--bg-glow-1), transparent 62%),
+        radial-gradient(820px 540px at 92% -4%, var(--bg-glow-2), transparent 60%);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Barra superior estilo VisorMail */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--topbar-border);
+      background: var(--topbar-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #eef2ff;
+      background: linear-gradient(150deg, #8ba0ff, #4c5ed6);
+      box-shadow: var(--brand-shadow);
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+
+    .brand-text p {
+      margin: 1px 0 0;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .topbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .gmail-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--ghost-bg);
+      font-size: 12px;
+      font-weight: 550;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .gmail-pill.is-ok {
+      border-color: var(--ok-border);
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .gmail-pill.is-amber {
+      border-color: var(--amber-border);
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    /* Botones */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition:
+        background-color 0.16s ease,
+        border-color 0.16s ease,
+        color 0.16s ease,
+        filter 0.16s ease,
+        transform 0.08s ease;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .btn.primary {
+      color: var(--btn-primary-text);
+      background: linear-gradient(180deg, var(--btn-primary-from), var(--btn-primary-to));
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.28) inset,
+        0 10px 22px -12px var(--accent-glow);
+    }
+
+    .btn.primary:hover:not(:disabled) {
+      filter: brightness(1.06);
+    }
+
+    .btn.ghost {
+      color: var(--text-dim);
+      border-color: var(--border-strong);
+      background: var(--ghost-bg);
+    }
+
+    .btn.ghost:hover:not(:disabled) {
+      color: var(--text);
+      background: var(--ghost-hover);
+    }
+
+    .btn.amber {
+      color: #1f1400;
+      background: #fbbf24;
+      font-weight: 650;
+    }
+
+    .btn.amber:hover:not(:disabled) {
+      filter: brightness(1.07);
+    }
+
+    .btn.ok {
+      color: var(--ok);
+      border-color: var(--ok-border);
+      background: var(--ok-soft);
+    }
+
+    .btn.ok:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+
+    .btn.danger {
+      color: var(--danger-text);
+      border-color: var(--danger-border);
+      background: var(--danger-soft);
+    }
+
+    .btn.danger:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+
+    .btn.sm {
+      height: 30px;
+      padding: 0 11px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    /* Contenedor principal */
+    .page {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 20px 28px 64px;
+    }
+
+    /* Banner de token expirado */
+    .token-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--amber-border);
+      background: var(--amber-soft);
+      color: #fde68a;
+    }
+
+    .token-banner.is-visible {
+      display: flex;
+    }
+
+    .token-banner-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .token-banner-text strong {
+      color: #fffbeb;
+    }
+
+    /* Filtros y búsqueda */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 34px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text-dim);
+      font-size: 12.5px;
+      font-weight: 550;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .filter-chip.is-active {
+      border-color: var(--accent-border);
+      background: var(--accent-soft);
+      color: #d6e0ff;
+    }
+
+    .filter-count {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text-dim);
+    }
+
+    .search-input {
+      height: 34px;
+      width: 240px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--card);
+      color: var(--text);
+      font-size: 12.5px;
+    }
+
+    .search-input::placeholder {
+      color: var(--faint);
+    }
+
+    /* Rejilla de tarjetas */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    @media (max-width: 520px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .topbar,
+      .page {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card-sheen), var(--card);
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.16s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .card-title-group {
+      min-width: 0;
+    }
+
+    .card-company {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+
+    .card-role {
+      margin: 2px 0 0;
+      font-size: 15.5px;
+      font-weight: 650;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .card-meta {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge-alta {
+      background: var(--ok-soft);
+      border-color: var(--ok-border);
+      color: var(--ok);
+    }
+
+    .badge-media {
+      background: var(--amber-soft);
+      border-color: var(--amber-border);
+      color: var(--amber);
+    }
+
+    .badge-descartada {
+      background: var(--danger-soft);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .badge-estado {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-strong);
+      color: var(--text-dim);
+    }
+
+    .badge-estado.is-lista {
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+      color: #c7d4ff;
+    }
+
+    .badge-estado.is-aplicada {
+      background: var(--ok-soft);
+      border-color: var(--ok-border);
+      color: var(--ok);
+    }
+
+    .discard-reason {
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--danger-border);
+      background: var(--danger-soft);
+      color: var(--danger-text);
+      font-size: 12px;
+    }
+
+    .salary-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 11px;
+      border-radius: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .salary-strip strong {
+      color: var(--ok);
+      font-weight: 650;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .copy-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding-top: 2px;
+    }
+
+    /* Desplegable de vista previa */
+    details.preview-box {
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.015);
+      overflow: hidden;
+    }
+
+    details.preview-box summary {
+      padding: 9px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    details.preview-box summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.preview-box summary::after {
+      content: "▾";
+      color: var(--muted);
+      transition: transform 0.15s ease;
+    }
+
+    details.preview-box[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .preview-content {
+      padding: 0 12px 12px;
+      border-top: 1px solid var(--divider);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .preview-block-label {
+      margin-top: 9px;
+      font-size: 11px;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+
+    .preview-text {
+      margin: 4px 0 0;
+      white-space: pre-wrap;
+      font-size: 12px;
+      color: var(--text-dim);
+      background: #0d1016;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    /* Footer de tarjeta: estado + notas */
+    .card-footer {
+      border-top: 1px solid var(--divider);
+      padding-top: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .notes-row {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .notes-input {
+      flex: 1;
+      min-width: 0;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: #0d1016;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .status-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .status-select {
+      height: 30px;
+      padding: 0 9px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: #0d1016;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 48px 24px;
+      text-align: center;
+      border: 1px dashed var(--border-strong);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.012);
+    }
+
+    .empty-state h2 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    .empty-state p {
+      margin: 0 auto;
+      max-width: 520px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Dialog nativo */
+    dialog {
+      width: min(560px, calc(100vw - 28px));
+      padding: 0;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 28px 60px -20px rgba(0, 0, 0, 0.95);
+    }
+
+    dialog::backdrop {
+      background: rgba(5, 7, 11, 0.72);
+      backdrop-filter: blur(4px);
+    }
+
+    .dialog-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .dialog-head h2 {
+      margin: 0;
+      font-size: 15.5px;
+      font-weight: 650;
+    }
+
+    .dialog-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border-strong);
+      background: #0b0e14;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .field textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .dialog-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      padding: 12px 18px 16px;
+      border-top: 1px solid var(--divider);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 60;
+      max-width: 360px;
+      padding: 10px 14px;
+      border-radius: 11px;
+      border: 1px solid var(--border-strong);
+      background: #171d27;
+      color: var(--text);
+      font-size: 12.5px;
+      box-shadow: 0 24px 48px -22px rgba(0, 0, 0, 0.95);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.is-error {
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 3v4"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Radar Candidaturas</h1>
+        <p>Jimmy Pazos · Panel semiautomático local</p>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div id="gmailPill" class="gmail-pill" title="Estado de conexión con Gmail">
+        <span class="status-dot"></span>
+        <span id="gmailPillText">Comprobando Gmail…</span>
+      </div>
+
+      <button id="scanBtn" class="btn primary" type="button">
+        Escanear alertas de Gmail + LinkedIn
+      </button>
+
+      <button id="openManualBtn" class="btn ghost" type="button">
+        + Añadir oferta manual
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section id="tokenBanner" class="token-banner" role="alert" aria-live="polite">
+      <div class="token-banner-text">
+        <span>⚠</span>
+        <div>
+          <strong>Sesión de Gmail expirada o pendiente.</strong>
+          <span id="tokenBannerDetail">El token en modo prueba dura 7 días. El panel sigue operativo para ofertas manuales y candidaturas existentes.</span>
+        </div>
+      </div>
+      <button id="reauthBtn" class="btn amber sm" type="button">
+        Reactivar sesión de Gmail
+      </button>
+    </section>
+
+    <section class="toolbar" aria-label="Filtros de candidaturas">
+      <div class="filters" id="filterBar">
+        <button class="filter-chip is-active" data-filter="todas" type="button">
+          Todas <span class="filter-count" id="count-todas">0</span>
+        </button>
+        <button class="filter-chip" data-filter="lista_para_aplicar" type="button">
+          Listas para aplicar <span class="filter-count" id="count-lista_para_aplicar">0</span>
+        </button>
+        <button class="filter-chip" data-filter="pendiente_ia" type="button">
+          Pendientes de análisis <span class="filter-count" id="count-pendiente_ia">0</span>
+        </button>
+        <button class="filter-chip" data-filter="aplicada" type="button">
+          Aplicadas <span class="filter-count" id="count-aplicada">0</span>
+        </button>
+        <button class="filter-chip" data-filter="descartada" type="button">
+          Descartadas <span class="filter-count" id="count-descartada">0</span>
+        </button>
+      </div>
+
+      <input
+        id="searchInput"
+        class="search-input"
+        type="search"
+        placeholder="Filtrar por empresa o puesto…"
+        aria-label="Filtrar por empresa o puesto"
+      >
+    </section>
+
+    <section id="cardsGrid" class="cards-grid" aria-live="polite"></section>
+  </main>
+
+  <dialog id="manualDialog" closedby="any" aria-labelledby="manualDialogTitle">
+    <form id="manualForm">
+      <div class="dialog-head">
+        <h2 id="manualDialogTitle">Añadir oferta manual</h2>
+        <button id="closeManualBtn" class="btn ghost sm" type="button" aria-label="Cerrar diálogo">Cerrar</button>
+      </div>
+
+      <div class="dialog-body">
+        <div class="field-grid">
+          <div class="field">
+            <label for="mEmpresa">Empresa</label>
+            <input id="mEmpresa" name="empresa" type="text" placeholder="Ej. Factorial, Automattic...">
+          </div>
+          <div class="field">
+            <label for="mModalidad">Modalidad / Ubicación</label>
+            <input id="mModalidad" name="modalidad" type="text" placeholder="Ej. 100 % Remoto España">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="mPuesto">Puesto</label>
+          <input id="mPuesto" name="puesto" type="text" placeholder="Ej. Senior UX/UI Design Technologist" required>
+        </div>
+
+        <div class="field">
+          <label for="mUrl">URL de la oferta</label>
+          <input id="mUrl" name="url_oferta" type="url" placeholder="https://www.linkedin.com/jobs/view/...">
+        </div>
+
+        <div class="field">
+          <label for="mDescripcion">Texto completo de la oferta (requisitos, stack, salario)</label>
+          <textarea id="mDescripcion" name="descripcion" placeholder="Pega aquí la descripción completa para que Antigravity la analice con el comando 'Procesa las ofertas pendientes'..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="mNotas">Notas personales (opcional)</label>
+          <input id="mNotas" name="notas" type="text" placeholder="Contacto, salario publicado, detalle clave...">
+        </div>
+      </div>
+
+      <div class="dialog-foot">
+        <button id="cancelManualBtn" class="btn ghost" type="button">Cancelar</button>
+        <button id="submitManualBtn" class="btn primary" type="submit">Guardar como pendiente_ia</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const state = {
+      gmailEstado: "TOKEN_EXPIRED",
+      gmailMensaje: "",
+      candidaturas: [],
+      conteos: {
+        todas: 0,
+        lista_para_aplicar: 0,
+        pendiente_ia: 0,
+        aplicada: 0,
+        descartada: 0
+      },
+      filter: "todas",
+      search: ""
+    };
+
+    const ESTADO_LABELS = {
+      pendiente_ia: "Pendiente de análisis",
+      lista_para_aplicar: "Lista para aplicar",
+      aplicada: "Aplicada",
+      descartada: "Descartada"
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    let toastTimer = null;
+    function showToast(msg, isError = false) {
+      const el = $("toast");
+      el.textContent = msg;
+      el.classList.toggle("is-error", isError);
+      el.classList.add("is-visible");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("is-visible"), 3400);
+    }
+
+    function safeUrl(raw) {
+      if (!raw || typeof raw !== "string") return "";
+      const trimmed = raw.trim();
+      if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) {
+        return trimmed;
+      }
+      return "";
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    async function copyText(text, label) {
+      if (!text) {
+        showToast(`No hay contenido en ${label}.`, true);
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(`${label} copiada al portapapeles.`);
+      } catch {
+        showToast("No se pudo acceder al portapapeles del navegador.", true);
+      }
+    }
+
+    function renderHeader() {
+      const pill = $("gmailPill");
+      const pillText = $("gmailPillText");
+      const banner = $("tokenBanner");
+      const bannerDetail = $("tokenBannerDetail");
+
+      pill.classList.remove("is-ok", "is-amber");
+      if (state.gmailEstado === "ACTIVO") {
+        pill.classList.add("is-ok");
+        pillText.textContent = "Gmail: Activo";
+        banner.classList.remove("is-visible");
+      } else {
+        pill.classList.add("is-amber");
+        pillText.textContent = state.gmailEstado === "NO_CREDENTIALS"
+          ? "Falta credentials.json"
+          : "Gmail: Token expirado";
+        bannerDetail.textContent = state.gmailMensaje || "Pulsa el botón para volver a autorizar Gmail.";
+        banner.classList.add("is-visible");
+      }
+    }
+
+    function renderCounts() {
+      for (const key of Object.keys(state.conteos)) {
+        const el = $(`count-${key}`);
+        if (el) el.textContent = String(state.conteos[key] ?? 0);
+      }
+    }
+
+    function getFilteredItems() {
+      const q = state.search.trim().toLowerCase();
+      return state.candidaturas.filter((item) => {
+        if (state.filter !== "todas" && item.estado !== state.filter) return false;
+        if (!q) return true;
+        const haystack = `${item.empresa || ""} ${item.puesto || ""} ${item.modalidad || ""} ${item.notas || ""}`.toLowerCase();
+        return haystack.includes(q);
+      });
+    }
+
+    function viabilidadBadge(viabilidad) {
+      if (!viabilidad) return "";
+      const v = viabilidad.toLowerCase();
+      let cls = "badge-media";
+      if (v === "alta") cls = "badge-alta";
+      else if (v === "descartada") cls = "badge-descartada";
+      return `<span class="badge ${cls}">Viabilidad: ${escapeHtml(viabilidad)}</span>`;
+    }
+
+    function estadoBadge(estado) {
+      const label = ESTADO_LABELS[estado] || estado || "Pendiente";
+      let cls = "badge-estado";
+      if (estado === "lista_para_aplicar") cls += " is-lista";
+      else if (estado === "aplicada") cls += " is-aplicada";
+      return `<span class="badge ${cls}">${escapeHtml(label)}</span>`;
+    }
+
+    function renderCards() {
+      const grid = $("cardsGrid");
+      const items = getFilteredItems();
+
+      if (items.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <h2>No hay candidaturas en esta vista</h2>
+            <p>
+              Pulsa <strong>Escanear alertas de Gmail + LinkedIn</strong> para importar alertas recientes
+              o usa <strong>+ Añadir oferta manual</strong> y luego pide a Antigravity:
+              <em>"Procesa las ofertas pendientes"</em>.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = items.map((item) => {
+        const id = escapeHtml(item.id);
+        const url = safeUrl(item.url_oferta);
+        const hasPdf = Boolean(item.ruta_pdf_cv);
+        const isReadyOrApplied = item.estado === "lista_para_aplicar" || item.estado === "aplicada" || Boolean(item.carta_presentacion || item.horquilla_salarial || hasPdf);
+        const fechaAplicacion = item.fecha_aplicacion ? ` · Aplicada: ${escapeHtml(item.fecha_aplicacion)}` : "";
+
+        return `
+          <article class="card" data-id="${id}">
+            <div class="card-top">
+              <div class="card-title-group">
+                <div class="card-company">${escapeHtml(item.empresa || "Empresa por confirmar")}</div>
+                <h3 class="card-role">${escapeHtml(item.puesto || "Puesto sin título")}</h3>
+                <div class="card-meta">
+                  <span>${escapeHtml(item.modalidad || "Por confirmar")}</span>
+                  <span>· Detectada: ${escapeHtml(item.fecha || "—")}${fechaAplicacion}</span>
+                </div>
+              </div>
+              <div class="badges">
+                ${estadoBadge(item.estado)}
+                ${viabilidadBadge(item.viabilidad)}
+              </div>
+            </div>
+
+            ${item.estado === "descartada" && item.motivo_descarte ? `
+              <div class="discard-reason">
+                <strong>Motivo de descarte:</strong> ${escapeHtml(item.motivo_descarte)}
+              </div>
+            ` : ""}
+
+            ${item.horquilla_salarial ? `
+              <div class="salary-strip">
+                <span>Horquilla objetivo</span>
+                <strong>${escapeHtml(item.horquilla_salarial)}</strong>
+              </div>
+            ` : ""}
+
+            ${isReadyOrApplied ? `
+              <div class="action-row">
+                ${url ? `
+                  <a class="btn primary sm" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+                    Ir a la oferta (Aplicar) ↗
+                  </a>
+                ` : ""}
+                ${hasPdf ? `
+                  <a class="btn ghost sm" href="/api/cv/${encodeURIComponent(item.id)}" target="_blank" rel="noopener noreferrer">
+                    Abrir CV PDF a medida
+                  </a>
+                ` : ""}
+              </div>
+
+              <div class="copy-row">
+                <button class="btn ghost sm" type="button" data-copy="horquilla" data-id="${id}">
+                  Copiar Horquilla Salarial
+                </button>
+                <button class="btn ghost sm" type="button" data-copy="situacion" data-id="${id}">
+                  Copiar Respuesta Situación Actual
+                </button>
+                <button class="btn ghost sm" type="button" data-copy="carta" data-id="${id}">
+                  Copiar Carta de Presentación
+                </button>
+              </div>
+            ` : url ? `
+              <div class="action-row">
+                <a class="btn ghost sm" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+                  Ver enlace de la oferta ↗
+                </a>
+              </div>
+            ` : ""}
+
+            ${(item.carta_presentacion || item.respuesta_situacion || item.horquilla_salarial || item.descripcion) ? `
+              <details class="preview-box">
+                <summary>Vista previa para formulario y descripción</summary>
+                <div class="preview-content">
+                  ${item.horquilla_salarial ? `
+                    <div>
+                      <div class="preview-block-label">Horquilla salarial</div>
+                      <pre class="preview-text">${escapeHtml(item.horquilla_salarial)}</pre>
+                    </div>
+                  ` : ""}
+                  ${item.respuesta_situacion ? `
+                    <div>
+                      <div class="preview-block-label">Respuesta situación actual</div>
+                      <pre class="preview-text">${escapeHtml(item.respuesta_situacion)}</pre>
+                    </div>
+                  ` : ""}
+                  ${item.carta_presentacion ? `
+                    <div>
+                      <div class="preview-block-label">Carta de presentación</div>
+                      <pre class="preview-text">${escapeHtml(item.carta_presentacion)}</pre>
+                    </div>
+                  ` : ""}
+                  ${item.descripcion ? `
+                    <div>
+                      <div class="preview-block-label">Descripción capturada de la oferta</div>
+                      <pre class="preview-text">${escapeHtml(item.descripcion)}</pre>
+                    </div>
+                  ` : ""}
+                </div>
+              </details>
+            ` : ""}
+
+            <div class="card-footer">
+              <div class="notes-row">
+                <input
+                  class="notes-input"
+                  type="text"
+                  value="${escapeHtml(item.notas || "")}"
+                  placeholder="Notas personales (contacto, estado entrevista...)"
+                  data-notes-input="${id}"
+                  aria-label="Notas personales"
+                >
+                <button class="btn ghost sm" type="button" data-save-note="${id}">
+                  Guardar nota
+                </button>
+              </div>
+
+              <div class="status-actions">
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                  <button class="btn ok sm" type="button" data-set-estado="aplicada" data-id="${id}">
+                    ✓ Marcar Aplicada
+                  </button>
+                  <button class="btn danger sm" type="button" data-set-estado="descartada" data-id="${id}">
+                    ✕ Descartar
+                  </button>
+                </div>
+
+                <select class="status-select" data-select-estado="${id}" aria-label="Cambiar estado de candidatura">
+                  <option value="pendiente_ia" ${item.estado === "pendiente_ia" ? "selected" : ""}>Pendiente de análisis</option>
+                  <option value="lista_para_aplicar" ${item.estado === "lista_para_aplicar" ? "selected" : ""}>Lista para aplicar</option>
+                  <option value="aplicada" ${item.estado === "aplicada" ? "selected" : ""}>Aplicada</option>
+                  <option value="descartada" ${item.estado === "descartada" ? "selected" : ""}>Descartada</option>
+                </select>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderAll() {
+      renderHeader();
+      renderCounts();
+      renderCards();
+    }
+
+    async function loadEstado() {
+      try {
+        const res = await fetch("/api/estado");
+        const data = await res.json();
+        state.gmailEstado = data.gmail_estado || "TOKEN_EXPIRED";
+        state.gmailMensaje = data.gmail_mensaje || "";
+        state.candidaturas = Array.isArray(data.candidaturas) ? data.candidaturas : [];
+        state.conteos = data.conteos || state.conteos;
+        renderAll();
+      } catch (err) {
+        showToast("Error cargando estado del servidor local.", true);
+      }
+    }
+
+    async function updateCandidatura(id, payload, successMessage) {
+      try {
+        const res = await fetch(`/api/actualizar/${encodeURIComponent(id)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast(data.detail || "Error al actualizar.", true);
+          return;
+        }
+        state.candidaturas = data.candidaturas;
+        state.conteos = data.conteos;
+        renderAll();
+        if (successMessage) showToast(successMessage);
+      } catch {
+        showToast("Error de conexión al actualizar la candidatura.", true);
+      }
+    }
+
+    // Eventos de barra superior
+    $("reauthBtn").addEventListener("click", async () => {
+      const btn = $("reauthBtn");
+      btn.disabled = true;
+      btn.textContent = "Abriendo Google OAuth…";
+      try {
+        const res = await fetch("/api/reauth", { method: "POST" });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          showToast(data.error || "No se pudo completar la reactivación.", true);
+        } else {
+          showToast("Sesión de Gmail reactivada correctamente.");
+          await loadEstado();
+        }
+      } catch {
+        showToast("Error lanzando OAuth en el servidor.", true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Reactivar sesión de Gmail";
+      }
+    });
+
+    $("scanBtn").addEventListener("click", async () => {
+      const btn = $("scanBtn");
+      btn.disabled = true;
+      btn.textContent = "Escaneando Gmail y LinkedIn…";
+      try {
+        const res = await fetch("/api/escanear-gmail", { method: "POST" });
+        const data = await res.json();
+        if (res.status === 401 || data.gmail_estado === "TOKEN_EXPIRED") {
+          state.gmailEstado = "TOKEN_EXPIRED";
+          state.gmailMensaje = data.error || "Token expirado.";
+          renderHeader();
+          showToast("Token de Gmail expirado. Pulsa 'Reactivar sesión de Gmail'.", true);
+          return;
+        }
+        if (!res.ok || !data.ok) {
+          showToast(data.error || "Error durante el escaneo.", true);
+          return;
+        }
+        state.candidaturas = data.candidaturas;
+        state.conteos = data.conteos;
+        renderAll();
+        if (data.authwall_detectado) {
+          showToast(
+            `Añadidas ${data.nuevas_anadidas} ofertas. LinkedIn pidió login en ./browser_session.`,
+            true
+          );
+        } else {
+          showToast(
+            `Escaneo listo: ${data.nuevas_anadidas} nuevas, ${data.duplicadas_omitidas} ya registradas.`
+          );
+        }
+      } catch {
+        showToast("Error conectando con /api/escanear-gmail.", true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Escanear alertas de Gmail + LinkedIn";
+      }
+    });
+
+    // Filtros y búsqueda
+    $("filterBar").addEventListener("click", (e) => {
+      const btn = e.target.closest(".filter-chip");
+      if (!btn) return;
+      state.filter = btn.dataset.filter;
+      document.querySelectorAll(".filter-chip").forEach((el) => {
+        el.classList.toggle("is-active", el.dataset.filter === state.filter);
+      });
+      renderCards();
+    });
+
+    $("searchInput").addEventListener("input", (e) => {
+      state.search = e.target.value;
+      renderCards();
+    });
+
+    // Delegación de eventos en tarjetas
+    $("cardsGrid").addEventListener("click", (e) => {
+      const copyBtn = e.target.closest("[data-copy]");
+      if (copyBtn) {
+        const item = state.candidaturas.find((c) => c.id === copyBtn.dataset.id);
+        if (!item) return;
+        const kind = copyBtn.dataset.copy;
+        if (kind === "horquilla") copyText(item.horquilla_salarial, "Horquilla salarial");
+        if (kind === "situacion") copyText(item.respuesta_situacion, "Respuesta de situación actual");
+        if (kind === "carta") copyText(item.carta_presentacion, "Carta de presentación");
+        return;
+      }
+
+      const noteBtn = e.target.closest("[data-save-note]");
+      if (noteBtn) {
+        const id = noteBtn.dataset.saveNote;
+        const input = document.querySelector(`[data-notes-input="${CSS.escape(id)}"]`);
+        updateCandidatura(id, { notas: input ? input.value : "" }, "Nota guardada.");
+        return;
+      }
+
+      const stateBtn = e.target.closest("[data-set-estado]");
+      if (stateBtn) {
+        const id = stateBtn.dataset.id;
+        const nuevoEstado = stateBtn.dataset.setEstado;
+        const input = document.querySelector(`[data-notes-input="${CSS.escape(id)}"]`);
+        const payload = {
+          estado: nuevoEstado,
+          notas: input ? input.value : undefined
+        };
+        if (nuevoEstado === "descartada") {
+          const item = state.candidaturas.find((c) => c.id === id);
+          if (item && !item.motivo_descarte) {
+            payload.motivo_descarte = "Descartada manualmente desde el dashboard.";
+          }
+        }
+        updateCandidatura(
+          id,
+          payload,
+          nuevoEstado === "aplicada" ? "Marcada como Aplicada (fecha registrada)." : "Candidatura descartada."
+        );
+      }
+    });
+
+    $("cardsGrid").addEventListener("change", (e) => {
+      const sel = e.target.closest("[data-select-estado]");
+      if (!sel) return;
+      const id = sel.dataset.selectEstado;
+      updateCandidatura(id, { estado: sel.value }, `Estado actualizado a ${ESTADO_LABELS[sel.value] || sel.value}.`);
+    });
+
+    // Modal manual con light-dismiss + fallback
+    const manualDialog = $("manualDialog");
+    $("openManualBtn").addEventListener("click", () => manualDialog.showModal());
+    $("closeManualBtn").addEventListener("click", () => manualDialog.close());
+    $("cancelManualBtn").addEventListener("click", () => manualDialog.close());
+
+    if (!("closedBy" in HTMLDialogElement.prototype)) {
+      manualDialog.addEventListener("click", (event) => {
+        if (event.target !== manualDialog) return;
+        const rect = manualDialog.getBoundingClientRect();
+        const isDialogContent = (
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width
+        );
+        if (!isDialogContent) manualDialog.close();
+      });
+    }
+
+    $("manualForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitBtn = $("submitManualBtn");
+      submitBtn.disabled = true;
+      const payload = {
+        empresa: $("mEmpresa").value,
+        modalidad: $("mModalidad").value,
+        puesto: $("mPuesto").value,
+        url_oferta: $("mUrl").value,
+        descripcion: $("mDescripcion").value,
+        notas: $("mNotas").value
+      };
+      try {
+        const res = await fetch("/api/oferta-manual", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast(data.detail || "No se pudo guardar la oferta.", true);
+          return;
+        }
+        state.candidaturas = data.candidaturas;
+        state.conteos = data.conteos;
+        renderAll();
+        $("manualForm").reset();
+        manualDialog.close();
+        showToast("Oferta añadida como pendiente_ia.");
+      } catch {
+        showToast("Error de conexión al guardar oferta manual.", true);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    loadEstado();
+  </script>
+</body>
+</html>

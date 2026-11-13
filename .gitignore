@@ -1,0 +1,9 @@
+credentials.json
+token.json
+candidaturas.json
+browser_session/
+salidas/
+.venv/
+__pycache__/
+*.pyc
+.env
