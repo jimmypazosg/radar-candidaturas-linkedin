@@ -1,6 +1,6 @@
 # 📡 Radar de Candidaturas
 
-> Sistema local de ingesta, evaluación asistida por IA y gestión de candidaturas técnicas con integración de **Gmail API**, scraping mediante **Playwright**, dashboard en **FastAPI** y compilación automática de CVs en **PDF (A4)**.
+> Sistema local de ingesta y gestión de candidaturas técnicas con integración de **Gmail API**, scraping mediante **Playwright**, dashboard en **FastAPI**, compilación de CVs en **PDF (A4)** y flujo de evaluación asistida por **agente de IA en el IDE**.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=for-the-badge&logo=fastapi&logoColor=white)
@@ -11,13 +11,24 @@
 
 ## 🧠 Visión General
 
-**Radar de Candidaturas** centraliza el ciclo completo de búsqueda de empleo técnico en un entorno local controlado:
+**Radar de Candidaturas** divide el flujo de trabajo en **dos capas** claramente diferenciadas:
 
-1. **Ingesta automática y manual:** Escanea alertas recientes de LinkedIn en Gmail (`from:linkedin.com newer_than:5d`) o permite registrar ofertas manualmente desde el dashboard.
+### 1. Lo que hace la aplicación web (`app.py` + `dashboard.html`)
+1. **Ingesta automática y manual:** Escanea alertas recientes de LinkedIn en Gmail (`from:linkedin.com newer_than:5d`) o permite registrar ofertas manualmente desde el dashboard, guardándolas en `candidaturas.json` con estado `pendiente_ia`.
 2. **Extracción de detalles:** Normaliza las URLs de LinkedIn extraídas de los correos y utiliza **Playwright** (lanzando **Google Chrome** en modo visible con un perfil persistente propio en `browser_session/`, o Chromium como respaldo) para extraer puesto, empresa, modalidad y descripción de cada vacante. Si LinkedIn muestra un *authwall*, puedes iniciar sesión manualmente en esa ventana y la sesión quedará guardada en `browser_session/`.
-3. **Evaluación y adaptación con IA:** Aplica las reglas operativas de [`WORKFLOW_CANDIDATURA.md`](./WORKFLOW_CANDIDATURA.md) contrastadas con [`perfil_maestro.md`](./perfil_maestro.md) para clasificar viabilidad, calcular horquillas salariales, redactar cartas de presentación/respuestas ATS y adaptar el CV.
-4. **Compilación PDF a 1 página A4:** Renderiza plantillas HTML (`plantilla_cv.html` → `cv_adaptado.html`) a PDF mediante Chromium/Edge en modo *headless* (`compilar_pdf.bat`).
-5. **Panel de control local:** Dashboard web servido en `http://127.0.0.1:8090` para revisar candidaturas, copiar textos en 1 clic, abrir CVs y actualizar estados.
+3. **Panel de control local:** Dashboard web en `http://127.0.0.1:8090` para filtrar candidaturas, copiar respuestas/cartas en 1 clic, abrir los PDFs generados y actualizar estados o notas.
+
+### 2. Lo que hace el Agente de IA en el IDE (`WORKFLOW_CANDIDATURA.md`)
+> **Importante:** `app.py` **no** llama a ninguna API de IA externa (no usa claves de OpenAI, Gemini ni Anthropic). El servidor Python únicamente captura y almacena las ofertas en estado `pendiente_ia`.
+
+La evaluación y generación de materiales la realiza **tu agente de IA en el IDE** (por ejemplo, Antigravity, Cursor o Claude Code) cuando le pides:
+> **`"Procesa las ofertas pendientes"`**
+
+Siguiendo [`WORKFLOW_CANDIDATURA.md`](./WORKFLOW_CANDIDATURA.md), el agente:
+1. Lee las ofertas en estado `pendiente_ia` de `candidaturas.json` y las contrasta con [`perfil_maestro.md`](./perfil_maestro.md).
+2. Clasifica la viabilidad (`Alta`, `Media` o `Descartada` con motivo), calcula horquillas salariales y redacta la carta de presentación y respuesta ATS.
+3. Maqueta un `cv_adaptado.html` a partir de [`plantilla_cv.html`](./plantilla_cv.html) y ejecuta `compilar_pdf.bat` para generar el PDF de 1 página A4.
+4. Actualiza `candidaturas.json` a `lista_para_aplicar` o `descartada`.
 
 ---
 
@@ -72,6 +83,18 @@ radar-candidaturas/
 ```
 
 > **Nota de privacidad:** Archivos sensibles y datos locales (`credentials.json`, `token.json`, `candidaturas.json`, `browser_session/`, `salidas/`, `.env`, `.venv/`) están excluidos del control de versiones mediante `.gitignore`.
+
+---
+
+## ✅ Requisitos Previos
+
+Antes de clonar y ejecutar el proyecto, asegúrate de contar con:
+
+- **Sistema operativo:** Windows (requerido para `compilar_pdf.bat`; en macOS/Linux el backend Python funciona igual, pero tendrás que adaptar el comando de exportación a PDF).
+- **Python 3.10+** instalado.
+- **Google Chrome** (recomendado: Playwright lo usa por defecto en `channel="chrome"` y `compilar_pdf.bat` lo usa para generar los PDFs) o **Microsoft Edge** (válido para `compilar_pdf.bat`, usando Chromium de Playwright como respaldo).
+- **Credenciales de Google Cloud (`credentials.json`)** *(opcional si solo vas a añadir ofertas manualmente)*: necesarias para el escaneo automático de Gmail con OAuth 2.0 (`gmail.readonly`).
+- **Agente de IA en el IDE** *(opcional, necesario para el procesamiento automático)*: como el servidor Python no integra llamadas a LLMs, necesitarás un asistente con acceso al workspace (Antigravity, Cursor, Claude Code, etc.) para ejecutar el flujo de `WORKFLOW_CANDIDATURA.md`.
 
 ---
 
