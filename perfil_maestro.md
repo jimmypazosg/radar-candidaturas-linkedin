@@ -15,7 +15,7 @@
 ## Resumen Ejecutivo
 Especialista híbrido entre diseño de interfaz (UX/UI) y desarrollo frontend con **más de 20 años de trayectoria** construyendo productos digitales, plataformas web y sistemas orientados a negocio. Experto en traducir sistemas visuales de Figma a código **HTML5, CSS3 y JavaScript** limpio, accesible y de alto rendimiento, eliminando la fricción entre diseño e ingeniería.
 
-Cuenta con **más de 6 años de experiencia trabajando 100 % en remoto** para **Land Gorilla Inc.** (San Luis Obispo, California), además de liderar proyectos propios de arquitectura web, SEO/CRO y automatización con Inteligencia Artificial y LLMs (`apisdev.com`).
+Cuenta con **más de 6 años de experiencia trabajando 100 % en remoto** para **Land Gorilla Inc.** (San Luis Obispo, California), sumados a etapas previas también en **modalidad remota para otra empresa de EE. UU. y equipos en Perú**, además de liderar proyectos propios de arquitectura web, SEO/CRO y automatización con Inteligencia Artificial y LLMs (`apisdev.com`). Esta trayectoria demuestra total autonomía, comunicación fluida y entrega orientada a resultados sin necesidad de presencialidad.
 
 ---
 
@@ -94,10 +94,11 @@ Cuenta con **más de 6 años de experiencia trabajando 100 % en remoto** para **
 ### Criterios de Viabilidad y Descarte Automático
 1. **Descarte automático (`Descartada`):**
    - Becas, prácticas universitarias o perfiles puramente junior/sin experiencia.
-   - Puestos **100 % presenciales** o híbridos exigentes **fuera de Salamanca** (ej. Madrid, Barcelona, Valencia sin remoto) cuando el salario sea bajo o estándar y no compense traslado.
+   - Puestos **100 % presenciales** o híbridos exigentes **fuera de Salamanca** **cuando NO encajen claramente con el perfil** o exijan presencialidad física innegociable con salario bajo (< 26.000 € brutos/año). *(Si la oferta es presencial/híbrida fuera de Salamanca pero el perfil técnico encaja muy bien, NO descartar: pasar a `Media` con estrategia de propuesta remota).*
    - Stacks núcleo incompatibles sin solapamiento web/UX (ej. SAP ABAP, COBOL, C++ embebido, Java Spring puro backend sin frontend, .NET desktop legacy, iOS/Android nativo exclusivo, DevOps/SRE puro sin capa web/producto).
    - Ofertas a **jornada completa** con salario manifiestamente precario (**< 22.000 € brutos/año**), o condiciones abusivas/desproporcionadas. *(Nota: si es media jornada o dedicación de mañanas, evaluar proporcionalmente).*
 2. **Viabilidad Media (`Media`):**
+   - **Presencial / Híbrido fuera de Salamanca con alto encaje técnico (Estrategia Propuesta Remoto):** Vacantes que piden presencialidad por defecto en Madrid/Barcelona/otras ciudades pero coinciden claramente con UX/UI + Frontend, Design Systems, WordPress/PHP o IA. Se prepara la candidatura proponiendo modalidad **100 % remota** respaldada por el historial probado en remoto (Land Gorilla Inc. + experiencia remota previa en EE. UU. y Perú).
    - Roles Frontend que pidan React/Vue/Angular/TypeScript avanzado como requisito principal cuando el fuerte demostrable está en HTML5/CSS3/JS/jQuery/WordPress/UI, pero valoran mucho Design Systems, UX Engineering y 20 años de base sólida.
    - Ofertas **100 % remotas** con presupuesto moderado (**24.000 € – 32.000 € brutos/año** en España) o puestos de transición hacia Producto/IA, siempre que tengan horario flexible o compatibilidad de mañanas.
    - Híbridos muy puntuales o freelance/part-time compatibles con el horario de mañana.

@@ -20,14 +20,16 @@ Analizar la descripción, empresa, puesto y modalidad de cada oferta pendiente a
 ### Descarte automático (`estado = "descartada"`, `viabilidad = "Descartada"`)
 Descartar inmediatamente y rellenar `motivo_descarte` de forma concreta cuando ocurra cualquiera de estos supuestos:
 - Becas, prácticas universitarias o perfiles junior/entry-level.
-- Puestos **100 % presenciales** (o híbridos de alta presencialidad) **fuera de Salamanca** con salario bajo o estándar que no justifique traslado.
+- Puestos **100 % presenciales** (o híbridos de alta presencialidad) **fuera de Salamanca** que **no** tengan alto encaje técnico o tengan salario bajo (< 26.000 € brutos/año). *(Importante: si una oferta presencial/híbrida fuera de Salamanca SÍ cumple claramente el perfil técnico, **no descartarla**; clasificarla como `Media` aplicando la **Estrategia Propuesta Remoto**).*
 - Stacks técnicos incompatibles sin solapamiento real con el perfil (ej. SAP/ABAP, COBOL, C++ embebido, desarrollo móvil nativo exclusivo, Java/Spring o .NET puro sin componente UX/UI/Frontend/Web).
 - Ofertas a **jornada completa** con banda salarial publicada manifiestamente precaria (**< 22.000 € brutos/año**). *(No descartar automáticamente presupuestos moderados de 24.000 € – 35.000 € ni opciones part-time/mañanas si son 100 % remotos y compatibles con la disponibilidad de mañana de 08:30 a 16:30/17:00 CET).*
 - Ofertas sin información suficiente por authwall que el usuario aún no haya completado (si `descripcion` indica bloqueo de login, dejar constancia o pedir texto antes de descartar si la empresa/puesto prometen).
 
 ### Ofertas viables (`viabilidad = "Alta"` o `"Media"`)
 - **`Alta`:** 100 % remoto (España, UE o EE. UU.) o Salamanca, con encaje directo en UX/UI Design Technologist, Frontend HTML5/CSS3/JS, Design Systems, WordPress/PHP Senior, CRO/SEO técnico o Automatización IA/Web.
-- **`Media`:** Remoto o híbrido compatible donde exista solapamiento sólido en UX/Frontend/Producto, aunque pida un framework secundario complementario (p. ej. React/Vue/TypeScript) que no invalide el valor senior del perfil.
+- **`Media`:**
+  - Remoto o híbrido compatible donde exista solapamiento sólido en UX/Frontend/Producto, aunque pida un framework secundario complementario (p. ej. React/Vue/TypeScript) que no invalide el valor senior del perfil.
+  - **Estrategia Propuesta Remoto:** Ofertas **presenciales o híbridas fuera de Salamanca** con alto encaje técnico en el perfil. En `carta_presentacion` y `respuesta_situacion` se debe indicar con claridad y tacto que resides en Salamanca y proponer colaborar en **modalidad 100 % remota**, respaldándolo con tu trayectoria probada en remoto (+5–6 años en Land Gorilla Inc. más experiencia remota previa para otra empresa de EE. UU. y en Perú) y garantizando la misma dedicación, comunicación y entrega orientada a resultados.
 
 ---
 
