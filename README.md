@@ -14,7 +14,7 @@
 **Radar de Candidaturas** centraliza el ciclo completo de búsqueda de empleo técnico en un entorno local controlado:
 
 1. **Ingesta automática y manual:** Escanea alertas recientes de LinkedIn en Gmail (`from:linkedin.com newer_than:5d`) o permite registrar ofertas manualmente desde el dashboard.
-2. **Extracción de detalles:** Utiliza **Playwright** con sesión persistente (`browser_session/`) para resolver redirecciones y extraer descripciones reales de las vacantes.
+2. **Extracción de detalles:** Normaliza las URLs de LinkedIn extraídas de los correos y utiliza **Playwright** (lanzando **Google Chrome** en modo visible con un perfil persistente propio en `browser_session/`, o Chromium como respaldo) para extraer puesto, empresa, modalidad y descripción de cada vacante. Si LinkedIn muestra un *authwall*, puedes iniciar sesión manualmente en esa ventana y la sesión quedará guardada en `browser_session/`.
 3. **Evaluación y adaptación con IA:** Aplica las reglas operativas de [`WORKFLOW_CANDIDATURA.md`](./WORKFLOW_CANDIDATURA.md) contrastadas con [`perfil_maestro.md`](./perfil_maestro.md) para clasificar viabilidad, calcular horquillas salariales, redactar cartas de presentación/respuestas ATS y adaptar el CV.
 4. **Compilación PDF a 1 página A4:** Renderiza plantillas HTML (`plantilla_cv.html` → `cv_adaptado.html`) a PDF mediante Chromium/Edge en modo *headless* (`compilar_pdf.bat`).
 5. **Panel de control local:** Dashboard web servido en `http://127.0.0.1:8090` para revisar candidaturas, copiar textos en 1 clic, abrir CVs y actualizar estados.
@@ -49,7 +49,7 @@ flowchart LR
 
 - **Backend & API:** Python, FastAPI, Uvicorn, Pydantic
 - **Integración Google:** `google-api-python-client`, `google-auth`, `google-auth-oauthlib` (scope `gmail.readonly`)
-- **Automatización Web:** Playwright (sesión persistente en `browser_session/`)
+- **Automatización Web:** Playwright lanzando Google Chrome real (`channel="chrome"`, con respaldo en Chromium) y perfil persistente en `browser_session/`
 - **Frontend:** HTML/CSS/JS autocontenido (`dashboard.html`)
 - **Generación de Documentos:** HTML/CSS A4 (`plantilla_cv.html`) + compilación vía `compilar_pdf.bat` (Google Chrome / Microsoft Edge `--headless --print-to-pdf`)
 - **Persistencia:** Almacenamiento local en JSON con escritura atómica (`candidaturas.json`)
