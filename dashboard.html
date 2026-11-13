@@ -816,6 +816,10 @@
       <button id="openManualBtn" class="btn ghost" type="button">
         + Añadir oferta manual
       </button>
+
+      <button id="openCleanBtn" class="btn ghost" type="button" title="Compactar descartadas y limpiar carpetas residuales">
+        Depurar
+      </button>
     </div>
   </header>
 
@@ -907,6 +911,31 @@
       <div class="dialog-foot">
         <button id="cancelManualBtn" class="btn ghost" type="button">Cancelar</button>
         <button id="submitManualBtn" class="btn primary" type="submit">Guardar como pendiente_ia</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="cleanDialog" closedby="any" aria-labelledby="cleanDialogTitle">
+    <form id="cleanForm">
+      <div class="dialog-head">
+        <h2 id="cleanDialogTitle">Depurar candidaturas y salidas</h2>
+        <button id="closeCleanBtn" class="btn ghost sm" type="button" aria-label="Cerrar diálogo">Cerrar</button>
+      </div>
+
+      <div class="dialog-body">
+        <p id="cleanPreviewText" style="margin:0;color:var(--text-muted);font-size:14px;line-height:1.5;">
+          Analizando espacio recuperable…
+        </p>
+
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
+          <input id="cleanAppliedChk" type="checkbox">
+          <span>Incluir también PDFs de candidaturas <strong>aplicadas</strong> con más de 90 días</span>
+        </label>
+      </div>
+
+      <div class="dialog-foot">
+        <button id="cancelCleanBtn" class="btn ghost" type="button">Cancelar</button>
+        <button id="confirmCleanBtn" class="btn primary" type="submit" disabled>Confirmar depuración</button>
       </div>
     </form>
   </dialog>
@@ -1414,6 +1443,95 @@
         showToast("Error de conexión al guardar oferta manual.", true);
       } finally {
         submitBtn.disabled = false;
+      }
+    });
+
+    const cleanDialog = $("cleanDialog");
+    const cleanPreviewText = $("cleanPreviewText");
+    const cleanAppliedChk = $("cleanAppliedChk");
+    const confirmCleanBtn = $("confirmCleanBtn");
+
+    function formatBytes(bytes) {
+      if (!bytes) return "0 B";
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+
+    async function refreshCleanPreview() {
+      confirmCleanBtn.disabled = true;
+      cleanPreviewText.textContent = "Calculando impacto de la depuración…";
+      try {
+        const res = await fetch("/api/limpiar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dry_run: true,
+            limpiar_aplicadas_antiguas: cleanAppliedChk.checked
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          cleanPreviewText.textContent = data.detail || "No se pudo calcular la previsualización.";
+          return;
+        }
+        const r = data.resumen;
+        const totalOps = r.compactadas_descartadas + r.eliminadas_descartadas + r.carpetas_eliminadas + r.pdfs_aplicadas_limpiados;
+        if (totalOps === 0) {
+          cleanPreviewText.textContent = "Todo está limpio: no hay descartadas por compactar/eliminar ni carpetas huérfanas en salidas/.";
+          confirmCleanBtn.disabled = true;
+          return;
+        }
+        cleanPreviewText.innerHTML =
+          `Se compactarán <strong>${r.compactadas_descartadas}</strong> descartadas recientes (&lt; 7 días, conservando URL para evitar duplicados en Gmail), ` +
+          `se eliminarán <strong>${r.eliminadas_descartadas}</strong> descartadas antiguas (&gt; 7 días), ` +
+          `se borrarán <strong>${r.carpetas_eliminadas}</strong> carpetas residuales en <code>salidas/</code>` +
+          (r.pdfs_aplicadas_limpiados ? ` (incluidos <strong>${r.pdfs_aplicadas_limpiados}</strong> PDFs de aplicadas &gt; 90 días)` : "") +
+          `. Espacio estimado a liberar: <strong>${formatBytes(r.bytes_liberados)}</strong>.`;
+        confirmCleanBtn.disabled = false;
+      } catch {
+        cleanPreviewText.textContent = "Error de conexión al consultar /api/limpiar.";
+      }
+    }
+
+    $("openCleanBtn").addEventListener("click", () => {
+      cleanAppliedChk.checked = false;
+      cleanDialog.showModal();
+      refreshCleanPreview();
+    });
+    $("closeCleanBtn").addEventListener("click", () => cleanDialog.close());
+    $("cancelCleanBtn").addEventListener("click", () => cleanDialog.close());
+    cleanAppliedChk.addEventListener("change", refreshCleanPreview);
+
+    $("cleanForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      confirmCleanBtn.disabled = true;
+      try {
+        const res = await fetch("/api/limpiar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dry_run: false,
+            limpiar_aplicadas_antiguas: cleanAppliedChk.checked
+          })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          showToast(data.detail || "Error al depurar.", true);
+          return;
+        }
+        const r = data.resumen;
+        state.candidaturas = data.candidaturas;
+        state.conteos = data.conteos;
+        renderAll();
+        cleanDialog.close();
+        showToast(
+          `Depuración lista: ${r.compactadas_descartadas} compactadas, ${r.eliminadas_descartadas} eliminadas, ${r.carpetas_eliminadas} carpetas borradas (${formatBytes(r.bytes_liberados)}).`
+        );
+      } catch {
+        showToast("Error de conexión al ejecutar la depuración.", true);
+      } finally {
+        confirmCleanBtn.disabled = false;
       }
     });
 
