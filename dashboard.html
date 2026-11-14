@@ -1186,12 +1186,12 @@
             ${isReadyOrApplied ? `
               <div class="action-row">
                 ${url ? `
-                  <a class="btn primary sm" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+                  <a class="btn primary sm" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" data-new-tab>
                     Ir a la oferta (Aplicar) ↗
                   </a>
                 ` : ""}
                 ${hasPdf ? `
-                  <a class="btn ghost sm" href="/api/cv/${encodeURIComponent(item.id)}" target="_blank" rel="noopener noreferrer">
+                  <a class="btn ghost sm" href="/api/cv/${encodeURIComponent(item.id)}" target="_blank" rel="noopener noreferrer" data-new-tab>
                     Abrir CV PDF a medida
                   </a>
                 ` : ""}
@@ -1210,7 +1210,7 @@
               </div>
             ` : url ? `
               <div class="action-row">
-                <a class="btn ghost sm" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+                <a class="btn ghost sm" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" data-new-tab>
                   Ver enlace de la oferta ↗
                 </a>
               </div>
@@ -1413,6 +1413,16 @@
 
     // Delegación de eventos en tarjetas
     $("cardsGrid").addEventListener("click", (e) => {
+      const newTabLink = e.target.closest("a[data-new-tab]");
+      if (newTabLink && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey && e.button === 0) {
+        const win = window.open(newTabLink.href, "_blank");
+        if (win) {
+          win.opener = null;
+          e.preventDefault();
+        }
+        return;
+      }
+
       const copyBtn = e.target.closest("[data-copy]");
       if (copyBtn) {
         const item = state.candidaturas.find((c) => c.id === copyBtn.dataset.id);
