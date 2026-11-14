@@ -1,83 +1,78 @@
-# WORKFLOW_CANDIDATURA.md — Reglas Operativas para Antigravity
+# WORKFLOW_CANDIDATURA.md — Reglas Operativas del Núcleo para Antigravity
 
-Este documento define el procedimiento estándar que debe ejecutar el agente cada vez que el usuario escriba:
-> **"Procesa las ofertas pendientes"**
+Este documento define el procedimiento estándar del **núcleo del negocio** que debe ejecutar el agente cada vez que el usuario escriba:
+> **"Procesa las ofertas pendientes"** *(o indique procesar un perfil concreto en `perfiles/<cliente>/`)*
 
 ---
 
 ## 1. Lectura inicial obligatoria
-1. Leer `candidaturas.json` y filtrar todas las entradas cuyo campo `"estado"` sea exactamente `"pendiente_ia"`.
-2. Leer `perfil_maestro.md` para contrastar experiencia real, stack, ubicación, idiomas y criterios salariales.
-3. Leer `plantilla_cv.html` como base única para maquetar los CVs adaptados.
+1. Leer la configuración activa del workspace:
+   - `config.local.json` si existe (o la ruta indicada por el usuario en `perfiles/<cliente>/config.json`); en su defecto, `config.example.json`.
+   - Extraer `data_dir` (por defecto `.`), `cv_pdf_filename` (por defecto `CV_Adaptado.pdf`) y `owner_name`.
+2. Leer `<data_dir>/candidaturas.json` y filtrar todas las entradas cuyo campo `"estado"` sea exactamente `"pendiente_ia"`.
+3. Leer el perfil maestro del candidato (`perfil_maestro.md` en la raíz o `<data_dir>/perfil_maestro.md` si el perfil tiene uno propio) para contrastar experiencia real, stack, ubicación, idiomas, disponibilidad y criterios salariales/de descarte.
+4. Leer la plantilla de CV (`plantilla_cv.html` en la raíz o `<data_dir>/plantilla_cv.html` si existe) como base única para maquetar los CVs adaptados.
 
 Si no hay ofertas con `estado == "pendiente_ia"`, informar al usuario y finalizar sin modificar archivos.
 
 ---
 
-## 2. Evaluación de viabilidad real en España
-Analizar la descripción, empresa, puesto y modalidad de cada oferta pendiente aplicando las reglas de `perfil_maestro.md`:
+## 2. Evaluación de viabilidad según `perfil_maestro.md`
+Analizar la descripción, empresa, puesto y modalidad de cada oferta pendiente aplicando **estrictamente** los criterios y restricciones definidos en el `perfil_maestro.md` activo:
 
 ### Descarte automático (`estado = "descartada"`, `viabilidad = "Descartada"`)
-Descartar inmediatamente y rellenar `motivo_descarte` de forma concreta cuando ocurra cualquiera de estos supuestos:
-- Becas, prácticas universitarias o perfiles junior/entry-level.
-- Puestos **100 % presenciales** (o híbridos de alta presencialidad) **fuera de Salamanca** que **no** tengan alto encaje técnico o tengan salario bajo (< 26.000 € brutos/año). *(Importante: si una oferta presencial/híbrida fuera de Salamanca SÍ cumple claramente el perfil técnico, **no descartarla**; clasificarla como `Media` aplicando la **Estrategia Propuesta Remoto**).*
-- Stacks técnicos incompatibles sin solapamiento real con el perfil (ej. SAP/ABAP, COBOL, C++ embebido, desarrollo móvil nativo exclusivo, Java/Spring o .NET puro sin componente UX/UI/Frontend/Web).
-- Ofertas a **jornada completa** con banda salarial publicada manifiestamente precaria (**< 22.000 € brutos/año**). *(No descartar automáticamente presupuestos moderados de 24.000 € – 35.000 € ni opciones part-time/mañanas si son 100 % remotos y compatibles con la disponibilidad de mañana de 08:30 a 16:30/17:00 CET).*
-- Ofertas sin información suficiente por authwall que el usuario aún no haya completado (si `descripcion` indica bloqueo de login, dejar constancia o pedir texto antes de descartar si la empresa/puesto prometen).
+Descartar inmediatamente y rellenar `motivo_descarte` de forma concreta cuando ocurra cualquiera de los supuestos marcados en `perfil_maestro.md` (por ejemplo: nivel junior/prácticas si el perfil es senior, presencialidad incompatible sin encaje que justifique propuesta remota, stacks núcleo sin solapamiento real, o banda salarial publicada por debajo del mínimo aceptable).
+- **Excepción por authwall:** Si `descripcion` indica bloqueo de login/información insuficiente y la empresa o puesto prometen, dejar constancia antes de descartar salvo indicación del usuario.
 
 ### Ofertas viables (`viabilidad = "Alta"` o `"Media"`)
-- **`Alta`:** 100 % remoto (España, UE o EE. UU.) o Salamanca, con encaje directo en UX/UI Design Technologist, Frontend HTML5/CSS3/JS, Design Systems, WordPress/PHP Senior, CRO/SEO técnico o Automatización IA/Web.
+- **`Alta`:** Modalidad y ubicación compatibles según `perfil_maestro.md`, con encaje directo en los roles objetivo y stack principal del candidato.
 - **`Media`:**
-  - Remoto o híbrido compatible donde exista solapamiento sólido en UX/Frontend/Producto, aunque pida un framework secundario complementario (p. ej. React/Vue/TypeScript) que no invalide el valor senior del perfil.
-  - **Estrategia Propuesta Remoto:** Ofertas **presenciales o híbridas fuera de Salamanca** con alto encaje técnico en el perfil. En `carta_presentacion` y `respuesta_situacion` se debe indicar con claridad y tacto que resides en Salamanca y proponer colaborar en **modalidad 100 % remota**, respaldándolo con tu trayectoria probada en remoto (+5–6 años en Land Gorilla Inc. más experiencia remota previa para otra empresa de EE. UU. y en Perú) y garantizando la misma dedicación, comunicación y entrega orientada a resultados.
+  - Solapamiento sólido con el núcleo del perfil aunque pida herramientas secundarias complementarias o presupueste una banda moderada dentro del rango flexible definido en `perfil_maestro.md`.
+  - **Estrategia Propuesta Remoto (si aplica según el perfil):** Si una oferta presencial/híbrida fuera de la ciudad del candidato cumple claramente su perfil técnico y el `perfil_maestro.md` contempla proponer remoto, no descartarla: clasificarla como `Media` y argumentar en `carta_presentacion` y `respuesta_situacion` la colaboración **100 % remota** respaldada por su experiencia remota previa.
 
 ---
 
 ## 3. Generación de materiales para cada oferta viable (`Alta` o `Media`)
 Por cada oferta viable, ejecutar en orden:
 
-1. **Calcular horquilla salarial (`horquilla_salarial`)** en **€ brutos/año** realista para España en 2026:
-   - Nacional España (presupuesto ajustado/flexible o entrada): `26.000 € – 36.000 € brutos/año` (o proporcional si es part-time/mañanas).
-   - Nacional España (Senior): `38.000 € – 52.000 € brutos/año` según tamaño de empresa y responsabilidad.
-   - Internacional / SaaS remoto: `48.000 € – 65.000 € brutos/año`.
+1. **Calcular horquilla salarial (`horquilla_salarial`)**:
+   - Usar las referencias y tramos salariales definidos en `perfil_maestro.md` (adaptados a mercado nacional vs. internacional/remoto o dedicación parcial si aplica).
    - Si la oferta publica una horquilla superior compatible, alinear la propuesta con ella sin infravalorarse.
 
 2. **Redactar respuesta de situación actual (`respuesta_situacion`)**:
-   - Texto breve en primera persona (3–5 líneas) listo para pegar en formularios de LinkedIn/ATS:
-     - Explica la situación actual en activo en **Land Gorilla Inc.** (entorno SaaS B2B internacional en modalidad 100 % remota, horario EE. UU. a partir de las 17:00–18:00 hora de Madrid, con disponibilidad completa por las mañanas) y consultoría web/IA propia (`apisdev.com`).
-     - Indica residencia estable en Salamanca (España), disponibilidad para remoto 100 %, nivel profesional en inglés y español, y motivación alineada con la empresa/vacante.
+   - Texto breve en primera persona (3–5 líneas) listo para pegar en formularios de LinkedIn/ATS, basado exclusivamente en la sección de disponibilidad, situación actual, ubicación e idiomas de `perfil_maestro.md`, y alineado con la vacante.
 
 3. **Redactar carta de presentación (`carta_presentacion`)**:
    - Concisa, directa, sin tópicos vacíos (150–220 palabras).
    - Conecta 2–3 necesidades explícitas de la oferta con logros reales de `perfil_maestro.md` (sin inventar experiencia ni tecnologías no cursadas).
 
 4. **Crear carpeta de salida única**:
-   - Formato: `salidas/YYYY-MM-DD_<slug-empresa>-<slug-puesto>/` (todo en minúsculas, ASCII sin tildes ni caracteres especiales, guiones simples).
+   - Formato: `<data_dir>/salidas/YYYY-MM-DD_<slug-empresa>-<slug-puesto>/` (todo en minúsculas, ASCII sin tildes ni caracteres especiales, guiones simples).
 
 5. **Generar `cv_adaptado.html`**:
-   - Basado en `plantilla_cv.html`.
+   - Basado en la `plantilla_cv.html` activa.
    - Mantener estrictamente **1 sola página A4 (`210mm x 297mm`, `overflow: hidden`)**.
    - Adaptar:
      - El titular bajo el nombre para reflejar el rol objetivo de la oferta.
      - El resumen ejecutivo (3–4 líneas) destacando las palabras clave exactas de la vacante.
-     - El orden de las especialidades y las viñetas de experiencia de Land Gorilla Inc. y `apisdev.com` para priorizar lo que busca el reclutador (manteniendo 100 % veracidad con `perfil_maestro.md`).
+     - El orden de las especialidades y las viñetas de experiencia para priorizar lo que busca el reclutador (manteniendo 100 % veracidad con `perfil_maestro.md`).
 
-6. **Compilar `CV_Jimmy_Pazos.pdf` y verificar**:
-   - Ejecutar desde la raíz del workspace:
+6. **Compilar `<cv_pdf_filename>` y verificar**:
+   - Ejecutar desde la raíz del workspace usando el nombre definido en `cv_pdf_filename` de la configuración activa (p. ej. `CV_Jimmy_Pazos.pdf` o `CV_Adaptado.pdf`):
      ```bat
-     compilar_pdf.bat "salidas\YYYY-MM-DD_empresa-puesto\cv_adaptado.html" "salidas\YYYY-MM-DD_empresa-puesto\CV_Jimmy_Pazos.pdf"
+     compilar_pdf.bat "<data_dir>\salidas\YYYY-MM-DD_empresa-puesto\cv_adaptado.html" "<data_dir>\salidas\YYYY-MM-DD_empresa-puesto\<cv_pdf_filename>"
      ```
-   - Comprobar que `CV_Jimmy_Pazos.pdf` existe y, si el lector de archivos está disponible, verificar visualmente que cabe en **1 sola página A4** sin texto cortado ni desbordamientos.
+   - Comprobar que el PDF existe y, si el lector de archivos está disponible, verificar visualmente que cabe en **1 sola página A4** sin texto cortado ni desbordamientos.
 
-7. **Actualizar `candidaturas.json`**:
+7. **Actualizar `<data_dir>/candidaturas.json`**:
    - Cambiar `"estado"` a `"lista_para_aplicar"`.
-   - Rellenar `"viabilidad"` (`"Alta"` o `"Media"`), `"motivo_descarte"` (`""`), `"horquilla_salarial"`, `"respuesta_situacion"`, `"carta_presentacion"`, y `"ruta_pdf_cv"` con la ruta relativa exacta en formato POSIX:
-     `salidas/YYYY-MM-DD_empresa-puesto/CV_Jimmy_Pazos.pdf`.
+   - Rellenar `"viabilidad"` (`"Alta"` o `"Media"`), `"motivo_descarte"` (`""`), `"horquilla_salarial"`, `"respuesta_situacion"`, `"carta_presentacion"`, y `"ruta_pdf_cv"` con la ruta relativa exacta **respecto a `data_dir`** en formato POSIX:
+     `salidas/YYYY-MM-DD_empresa-puesto/<cv_pdf_filename>`.
 
 ---
 
 ## 4. Reglas de integridad
-- **No inventar nunca** experiencia, títulos, empresas, métricas ni dominio de frameworks que no figuren en `perfil_maestro.md`.
-- **No modificar** candidaturas que ya estén en estado `"aplicada"` o `"descartada"`, salvo indicación explícita del usuario.
+- **No inventar nunca** experiencia, títulos, empresas, métricas ni dominio de herramientas que no figuren en `perfil_maestro.md`.
+- **No modificar** candidaturas que ya estén en estado `"aplicada"`, `"cerrada"` o `"descartada"`, salvo indicación explícita del usuario.
 - **No sobrescribir** el campo `"notas"` del usuario si ya contiene texto; en todo caso conservarlo intacto.
-- Al terminar el lote, presentar al usuario un resumen claro con las ofertas listas para aplicar, las descartadas (con su motivo) y recordar que ya puede revisarlas y copiar todo en 1 clic desde `http://localhost:8090`.
+- Al terminar el lote, presentar al usuario un resumen claro con las ofertas listas para aplicar, las descartadas (con su motivo) y recordar que ya puede revisarlas y copiar todo en 1 clic desde el dashboard local.

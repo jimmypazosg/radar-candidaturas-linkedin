@@ -6,42 +6,55 @@
 - **Ubicación:** Salamanca, España (disponibilidad 100 % remoto para España/Europa/EE. UU. o presencial/híbrido exclusivamente en Salamanca)
 - **Email:** hola@jimmypazos.es
 - **Teléfono:** +34 641 019 380
-- **Web / Portfolio:** https://jimmypazos.es
+- **Web / Portfolio:** https://jimmypazos.es · https://www.behance.net/jimmypazos
 - **Consultoría / Proyectos IA & Web:** https://apisdev.com
 - **Idiomas:** Español (nativo) · Inglés (profesional, trabajo diario en equipo SaaS estadounidense)
 
 ---
 
 ## Resumen Ejecutivo
-Especialista híbrido entre diseño de interfaz (UX/UI) y desarrollo frontend con **más de 20 años de trayectoria** construyendo productos digitales, plataformas web y sistemas orientados a negocio. Experto en traducir sistemas visuales de Figma a código **HTML5, CSS3 y JavaScript** limpio, accesible y de alto rendimiento, eliminando la fricción entre diseño e ingeniería.
+Especialista híbrido entre diseño de interfaz (UX/UI) y desarrollo frontend con **más de 20 años de trayectoria** construyendo productos digitales, plataformas web y sistemas orientados a negocio. Experto en traducir sistemas visuales de Figma a código **HTML5, CSS3, JavaScript y Astro** limpio, accesible y de alto rendimiento, eliminando la fricción entre diseño e ingeniería.
 
-Cuenta con **más de 6 años de experiencia trabajando 100 % en remoto** para **Land Gorilla Inc.** (San Luis Obispo, California), sumados a etapas previas también en **modalidad remota para otra empresa de EE. UU. y equipos en Perú**, además de liderar proyectos propios de arquitectura web, SEO/CRO y automatización con Inteligencia Artificial y LLMs (`apisdev.com`). Esta trayectoria demuestra total autonomía, comunicación fluida y entrega orientada a resultados sin necesidad de presencialidad.
+Cuenta con **experiencia continuada trabajando 100 % en remoto** para **Land Gorilla Inc.** (San Luis Obispo, California, desde dic. 2021), sumada a etapas previas también en **modalidad remota para EE. UU. (`sevenper.com`)** y equipos en Perú (**Affinity Latam / Southern Cone Systems** y **Continental Travel**), además de liderar proyectos propios de arquitectura web, SEO/CRO e **IA en local (Ollama, Strata, Open WebUI)** en `apisdev.com`. Esta trayectoria demuestra total autonomía, comunicación fluida y entrega orientada a resultados sin necesidad de presencialidad.
 
 ---
 
 ## Experiencia Profesional
 
-### 1. Frontend & Web Developer (Producto SaaS) — Land Gorilla Inc.
+### 1. Frontend & Web Developer (Producto SaaS & Web Corporativa) — Land Gorilla Inc.
 - **Ubicación:** San Luis Obispo, CA, EE. UU. (**100 % Remoto** desde España)
-- **Relación:** +6 años de trayectoria en entorno remoto internacional (etapa actual producto SaaS desde dic. 2021 – actualidad)
+- **Periodo:** Dic. 2021 – Actualidad
 - **Responsabilidades y logros:**
-  - Traducción fiel de diseños gráficos, wireframes y propuestas UI (Figma) en interfaces web funcionales, responsivas y mantenibles con HTML5 semántico, CSS3, JavaScript (ES6+) y jQuery.
-  - Desarrollo, evolución y mantenimiento de plataformas digitales sobre **WordPress a medida, PHP y MySQL**, garantizando coherencia visual, velocidad de carga (Core Web Vitals) y estabilidad en producción.
-  - Optimización continua de flujos digitales, embudos de conversión y recorridos de usuario en un entorno tecnológico SaaS B2B internacional y multidisciplinar.
+  - Gestión integral de la web corporativa principal, traducción fiel de diseños UI (Figma) a código limpio y creación de plantillas de newsletters.
+  - **Optimización extrema de rendimiento (WPO / Core Web Vitals) e infraestructura:** transición desde maquetadores pesados (Elementor) hacia **WordPress nativo con bloques Gutenberg**, refactorización de CSS/plantillas, apoyo técnico en **SEO/AEO** y evaluación/migración de hosting (**Bluehost → pruebas en AWS → Cloudways** tras análisis de rendimiento y costes), reduciendo drásticamente los tiempos de carga y el gasto operativo.
+  - **Migración completa de WordPress a Astro:** desarrollo colaborativo junto al responsable técnico usando **Claude Code**, transformando propuestas visuales en componentes **Astro** compilados a **HTML estático puro**, eliminando dependencias de PHP y base de datos para lograr máxima velocidad y seguridad.
   - Colaboración directa y autónoma con equipos de producto, diseño y marketing en inglés en modalidad 100 % asíncrona/remota.
 
-### 2. Consultor en Arquitectura Web, SEO/CRO & Automatización IA — Proyectos Propios (`apisdev.com`)
-- **Ubicación:** Remoto · 2022 – Actualidad
+### 2. Consultor en Arquitectura Web, SEO/CRO & IA Local — Proyectos Propios (`apisdev.com`)
+- **Ubicación:** Remoto · Etapa actual 2022 – Actualidad *(estudio fundado en 2004)*
 - **Responsabilidades y logros:**
   - Diseño e implementación integral de soluciones web orientadas a conversión (**CRO**), rendimiento técnico (**WPO**), **SEO técnico** y **AEO** (Answer Engine Optimization).
-  - Integración de flujos de Inteligencia Artificial y **LLMs** (Ollama, Open WebUI, APIs generativas) y agentes de automatización (**n8n**) para optimizar procesos operativos y de negocio.
-  - Gestión autónoma de infraestructura y despliegues de alta disponibilidad en entornos **Linux, Docker y Nginx**.
+  - Despliegue y operación de **LLMs en local** para inferencia privada sobre hardware propio utilizando **Ollama**, **Strata** (`github.com/Niko1221/Strata`, modelos MoE locales con API compatible OpenAI/Anthropic) y **Open WebUI**, conectados a flujos de desarrollo con **Claude Code**.
+  - Gestión autónoma de infraestructura, DNS/CDN (**Cloudflare**) y despliegues de alta disponibilidad en entornos **Linux, Docker y Nginx**.
 
-### 3. Web Designer & Frontend Developer — Southern Cone Systems
-- **Ubicación:** Lima, Perú · Trayectoria previa
+### 3. Frontend & UI Developer — Affinity Latam (vía Southern Cone Systems)
+- **Ubicación:** Lima, Perú · 2018 – 2021
 - **Responsabilidades y logros:**
-  - Diseño de interfaces web (UI) y maquetación frontend combinando criterio estético, arquitectura de información y código estándar.
-  - Participación directa en el ciclo completo de creación de sitios y aplicaciones web desde el concepto visual hasta la publicación en producción.
+  - Desarrollo frontend para plataforma de emisión de seguros y comunicaciones utilizada por grandes bancos y aseguradoras en Perú (**Interbank, BBVA, La Positiva**).
+  - **Modernización integral del dashboard web:** rediseño y migración estructural de una herramienta legacy en **.NET** basada en tablas hacia una interfaz **HTML5/CSS3 moderna y responsive**, trabajando junto al equipo .NET para implementar el nuevo layout con impacto muy positivo en los clientes bancarios.
+  - Maquetación de plantillas de **emailing / newsletters** (marketing promocional y correos transaccionales de altas y bajas) en coordinación con los equipos creativos de bancos y aseguradoras.
+
+### 4. Jefe de Marketing & Producto Digital — Continental Travel
+- **Ubicación:** Lima, Perú · 2013 – 2018
+- **Responsabilidades y logros:**
+  - Creación y lanzamiento de la **plataforma e-commerce** de la agencia de viajes.
+  - Dirección de campañas de marketing digital, definición de paquetes promocionales, coordinación y aprobación de artes con agencia externa, y publicación en canales digitales.
+
+### 5. Fundador & Web Designer / Developer — Apisdev (`apisdev.com`) & Sevenper (`sevenper.com`)
+- **Ubicación:** Lima, Perú (**100 % Remoto** para EE. UU.) · 2004 – 2013
+- **Responsabilidades y logros:**
+  - Fundación de estudio propio (`apisdev.com`, activo desde abril de 2004) orientado a diseño, desarrollo web y soluciones digitales para clientes nacionales e internacionales.
+  - Colaboración 100 % remota con **Sevenper (`sevenper.com`)** para clientes hispanos en **Nueva York y Nueva Jersey (EE. UU.)**: diseño editorial físico y electrónico de la revista **Business Latino** y desarrollo de sitios web corporativos y tiendas online (**HTML, PHP, WordPress y WooCommerce**).
 
 ---
 
@@ -53,29 +66,45 @@ Cuenta con **más de 6 años de experiencia trabajando 100 % en remoto** para **
 - Consistencia visual, accesibilidad web y Handoff diseño-ingeniería
 - Adobe Photoshop / Suite creativa / Diseño editorial
 
-### Frontend Engineering
+### Frontend Engineering & Generación Estática
 - HTML5 Semántico & CSS3 moderno (Grid, Flexbox, Custom Properties, Responsive Design)
+- **Astro** (arquitectura por bloques, SSG, HTML estático puro)
 - JavaScript (ES6+), DOM, AJAX & jQuery
+- Emailing HTML responsive (newsletters y transaccional)
 - Optimización de rendimiento web (WPO, Core Web Vitals, carga crítica)
-- Arquitectura CSS limpia y componentes reutilizables
 
-### CMS, Backend & Producto Web
-- WordPress a medida (temas, bloques, hooks, rendimiento, seguridad)
-- PHP & MySQL
-- Integración de APIs REST y formularios avanzados
+### CMS, E-commerce & Backend Web
+- WordPress a medida (Gutenberg nativo, temas, bloques, hooks, rendimiento, seguridad)
+- WooCommerce & plataformas e-commerce
+- PHP, MySQL & integración en entornos .NET (capa UI/layout)
 
 ### SEO, CRO & Analítica
 - SEO Técnico, arquitectura semántica, Schema/datos estructurados y AEO
 - Optimización de tasa de conversión (CRO), landing pages y UX de formularios
 
-### Inteligencia Artificial, Automatización & DevOps
-- Integración práctica de LLMs (Gemini, OpenAI, DeepSeek, Ollama, Open WebUI)
-- Orquestación de flujos y automatización con n8n y Python/Node.js
-- Administración básica de servidores Linux, Docker y Nginx
+### Inteligencia Artificial Local, Desarrollo Asistido & DevOps
+- Inferencia con **LLMs en local** y hardware propio (**Ollama, Strata, Open WebUI**)
+- Desarrollo asistido por IA (**Claude Code**) e integración de APIs generativas (Gemini, OpenAI, DeepSeek)
+- Scripting y automatización con Python / Node.js
+- Administración de servidores **Linux, Docker y Nginx**
+
+---
+
+## Proyectos Destacados (Portfolio Behance: `behance.net/jimmypazos`)
+*(Selección de casos reales para incluir según el enfoque de cada candidatura: UX/Figma, SaaS B2B, WordPress o E-commerce).*
+
+- **Dinner in the Sky Perú** *(Web Design & E-commerce / Reservas)*: Diseño web e integración de **WooCommerce** para venta de entradas, selección de fechas/horarios y reservas online de experiencias gastronómicas premium.
+- **Loratech (IoT / LoRaWAN)** *(Figma → WordPress)*: Flujo completo desde diseño UI en **Figma** y **Photoshop** hasta web responsive pixel-perfect con navegación sticky y formularios protegidos con reCAPTCHA.
+- **Smart Tracing (SaaS Logística & GPS)** *(Figma → Web B2B)*: Traducción de prototipos **Figma** a web SaaS B2B orientada a captación de demos y presentación de producto telemático.
+- **Comsatel (Telemetría & Flotas GPS)** *(WordPress Custom)*: Diseño personalizado e implementación modular en WordPress, HTML5/CSS3 y JavaScript para empresa líder en rastreo vehicular.
+- **PinedaModa & MaskotaShop** *(E-commerce & Pasarelas)*: Tiendas **WooCommerce** con catálogo variable e integración de pasarela de pagos (**Culqi**) optimizadas para checkout móvil.
 
 ---
 
 ## Educación
+- **Curso completo de Claude Code** — Formación especializada (Ago. 2026)
+- **Social Media Marketing para Pymes (ADGG075PO)** — Grupo ATU · 100h (2024)
+- **Marketing y Ventas por Internet** — IST IDAT, Lima (2012)
 - **Técnico en Computación y Sistemas** — IST Perú Pacífico, Lima (1998 – 2001)
 - **Especialización Webmaster** — AccesoPeru.com Escuela (1999)
 
@@ -85,11 +114,11 @@ Cuenta con **más de 6 años de experiencia trabajando 100 % en remoto** para **
 
 ### Roles Objetivo (Encaje Alto)
 - Senior UX/UI Design Technologist / Design Engineer / UX Engineer
-- Senior Frontend Developer (con fuerte peso en HTML5/CSS3/JS, UI, maquetación pixel-perfect y Design Systems)
+- Senior Frontend Developer (con fuerte peso en HTML5/CSS3/JS, Astro, UI, maquetación pixel-perfect y Design Systems)
 - Senior WordPress Developer / PHP & Frontend Specialist (producto o agencia de alto nivel)
 - Product Designer híbrido con código (Design + Frontend)
 - Technical SEO / CRO & Web Performance Specialist
-- Consultor / Arquitecto Web + Automatización IA / No-Code & Low-Code (n8n, LLMs)
+- Consultor / Arquitecto Web + IA Local / LLMs (Astro, WordPress, Ollama, Strata)
 
 ### Criterios de Viabilidad y Descarte Automático
 1. **Descarte automático (`Descartada`):**
