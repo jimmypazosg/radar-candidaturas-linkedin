@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dossier Ejecutivo — [Nombre Candidato]</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #e5e7eb;
+      font-family: "Segoe UI", "Inter", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      color: #1f2937;
+      -webkit-font-smoothing: antialiased;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto;
+      padding: 12mm 14mm 11mm;
+      background: #ffffff;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media print {
+      html,
+      body {
+        background: #ffffff;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Cabecera */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      padding-bottom: 9px;
+      border-bottom: 2px solid #0f172a;
+    }
+
+    .kicker {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1d4ed8;
+      margin: 0 0 3px;
+    }
+
+    .header-left h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+      line-height: 1.15;
+    }
+
+    .header-left .meta {
+      margin: 3px 0 0;
+      font-size: 10.2px;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    .score-box {
+      text-align: right;
+      background: #eff6ff;
+      border: 1.5px solid #1d4ed8;
+      border-radius: 6px;
+      padding: 6px 11px;
+      min-width: 112px;
+    }
+
+    .score-box .score-val {
+      font-size: 19px;
+      font-weight: 800;
+      color: #1d4ed8;
+      line-height: 1.1;
+    }
+
+    .score-box .score-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #1e3a8a;
+      margin-top: 2px;
+    }
+
+    /* Barra de ejes */
+    .axes {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 9px 0;
+    }
+
+    .axis-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 5px 8px;
+    }
+
+    .axis-card .axis-name {
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+    }
+
+    .axis-card .axis-score {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 1px;
+    }
+
+    /* Veredicto */
+    .verdict {
+      margin: 2px 0 10px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #1d4ed8;
+      font-size: 10px;
+      line-height: 1.44;
+      color: #334155;
+    }
+
+    .verdict strong {
+      color: #0f172a;
+    }
+
+    /* Dos columnas: Por qué sí vs Banderas rojas */
+    .signals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 11px;
+    }
+
+    .panel {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .panel.pros {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .panel.risks {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+
+    .panel-title {
+      margin: 0 0 5px;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .panel.pros .panel-title {
+      color: #166534;
+    }
+
+    .panel.risks .panel-title {
+      color: #92400e;
+    }
+
+    .signal-list {
+      margin: 0;
+      padding-left: 14px;
+      font-size: 9.6px;
+      line-height: 1.4;
+      color: #1f2937;
+    }
+
+    .signal-list li {
+      margin-bottom: 4px;
+    }
+
+    .signal-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Guion de entrevista */
+    .interview-section {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-heading {
+      margin: 0 0 7px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #0f172a;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #cbd5e1;
+    }
+
+    .question-item {
+      margin-bottom: 7px;
+      padding: 5px 8px;
+      background: #f8fafc;
+      border-left: 2.5px solid #0f172a;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .question-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .q-text {
+      margin: 0 0 2px;
+      font-size: 9.9px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.32;
+    }
+
+    .q-guide {
+      margin: 0;
+      font-size: 9.1px;
+      color: #475569;
+      line-height: 1.35;
+    }
+
+    .q-guide strong {
+      color: #1d4ed8;
+    }
+
+    /* Pie */
+    .footer {
+      margin-top: auto;
+      padding-top: 7px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.5px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <p class="kicker">Briefing Ejecutivo de Selección · [Empresa] — [Puesto]</p>
+        <h1>[Nombre Completo del Candidato]</h1>
+        <p class="meta">
+          <strong>[Titular actual]</strong> · [Ubicación / Modalidad] · [Enlace LinkedIn o CV]
+        </p>
+      </div>
+      <div class="score-box">
+        <div class="score-val">[86]/100</div>
+        <div class="score-label">[TOP FINALISTA]</div>
+      </div>
+    </header>
+
+    <section class="axes">
+      <div class="axis-card">
+        <div class="axis-name">Evidencia Técnica</div>
+        <div class="axis-score">[34] / 40</div>
+      </div>
+      <div class="axis-card">
+        <div class="axis-name">Experiencia Afín</div>
+        <div class="axis-score">[22] / 25</div>
+      </div>
+      <div class="axis-card">
+        <div class="axis-name">Estabilidad</div>
+        <div class="axis-score">[17] / 20</div>
+      </div>
+      <div class="axis-card">
+        <div class="axis-name">Encaje Logístico</div>
+        <div class="axis-score">[13] / 15</div>
+      </div>
+    </section>
+
+    <section class="verdict">
+      <strong>Veredicto para el entrevistador:</strong> [Resumen de 2–3 líneas en lenguaje de negocio explicando por qué merece entrevista, cuál es su nivel real probable y qué aspecto conviene confirmar en los primeros 10 minutos.]
+    </section>
+
+    <section class="signals-grid">
+      <div class="panel pros">
+        <h2 class="panel-title">Por qué sí (Evidencias del CV)</h2>
+        <ul class="signal-list">
+          <li><strong>[Fortaleza 1]:</strong> [Evidencia concreta citada del CV y su impacto práctico.]</li>
+          <li><strong>[Fortaleza 2]:</strong> [Evidencia concreta citada del CV y su impacto práctico.]</li>
+          <li><strong>[Fortaleza 3]:</strong> [Evidencia concreta citada del CV y su impacto práctico.]</li>
+        </ul>
+      </div>
+      <div class="panel risks">
+        <h2 class="panel-title">Banderas rojas e Incógnitas</h2>
+        <ul class="signal-list">
+          <li><strong>[Riesgo / Gap 1]:</strong> [Detalle objetivo o dato ausente en el CV a contrastar.]</li>
+          <li><strong>[Riesgo / Gap 2]:</strong> [Detalle objetivo o expectativa salarial por confirmar.]</li>
+          <li><strong>[Incógnita 3]:</strong> [Pregunta abierta sobre autonomía, idioma o disponibilidad.]</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="interview-section">
+      <h2 class="section-heading">Guion de Entrevista Personalizado (5 preguntas clave)</h2>
+
+      <div class="question-item">
+        <p class="q-text">1. [Pregunta específica sobre el proyecto/logro principal citado en su CV]</p>
+        <p class="q-guide"><strong>Qué buscar:</strong> [Respuesta sólida: explica decisiones concretas, trade-offs y métricas propias · Alerta: habla solo en plural "hicimos" sin precisar su rol.]</p>
+      </div>
+
+      <div class="question-item">
+        <p class="q-text">2. [Pregunta técnica o funcional aterrizada al problema real del cliente]</p>
+        <p class="q-guide"><strong>Qué buscar:</strong> [Respuesta sólida: identifica cuellos de botella reales · Alerta: repite teoría de manual sin ejemplos vividos.]</p>
+      </div>
+
+      <div class="question-item">
+        <p class="q-text">3. [Pregunta orientada a verificar una bandera roja o salto/gap detectado]</p>
+        <p class="q-guide"><strong>Qué buscar:</strong> [Respuesta sólida: explicación transparente y aprendizaje claro · Alerta: evasivas o culpabilización sistemática.]</p>
+      </div>
+
+      <div class="question-item">
+        <p class="q-text">4. [Pregunta de encaje con escala PYME/Startup y nivel de autonomía]</p>
+        <p class="q-guide"><strong>Qué buscar:</strong> [Respuesta sólida: comodidad operando con recursos acotados · Alerta: dependencia de grandes equipos o procesos rígidos.]</p>
+      </div>
+
+      <div class="question-item">
+        <p class="q-text">5. [Pregunta de cierre logístico: expectativa salarial real, preaviso y motivación]</p>
+        <p class="q-guide"><strong>Qué buscar:</strong> [Respuesta sólida: horquilla alineada con la banda aprobada y disponibilidad clara.]</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>Preparado por: [Servicio Concierge de Pre-Selección / Partner]</span>
+      <span>Fecha: [YYYY-MM-DD] · Documento confidencial de uso interno en entrevista</span>
+    </footer>
+  </div>
+</body>
+</html>
