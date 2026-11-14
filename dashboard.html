@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
-  <title>Radar Candidaturas · Jimmy Pazos</title>
+  <title>Radar Candidaturas</title>
   <style>
     :root {
       color-scheme: dark;
@@ -269,6 +269,16 @@
       filter: brightness(1.1);
     }
 
+    .btn.cerrada {
+      color: var(--amber);
+      border-color: var(--amber-border);
+      background: var(--amber-soft);
+    }
+
+    .btn.cerrada:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+
     .btn.sm {
       height: 30px;
       padding: 0 11px;
@@ -505,12 +515,27 @@
       color: var(--ok);
     }
 
+    .badge-estado.is-cerrada {
+      background: var(--amber-soft);
+      border-color: var(--amber-border);
+      color: var(--amber);
+    }
+
     .discard-reason {
       padding: 9px 11px;
       border-radius: 10px;
       border: 1px solid var(--danger-border);
       background: var(--danger-soft);
       color: var(--danger-text);
+      font-size: 12px;
+    }
+
+    .closed-notice {
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--amber-border);
+      background: var(--amber-soft);
+      color: #fde68a;
       font-size: 12px;
     }
 
@@ -799,7 +824,7 @@
       </div>
       <div class="brand-text">
         <h1>Radar Candidaturas</h1>
-        <p>Jimmy Pazos · Panel semiautomático local</p>
+        <p id="workspaceSubtitle">Panel semiautomático local</p>
       </div>
     </div>
 
@@ -850,6 +875,9 @@
         </button>
         <button class="filter-chip" data-filter="aplicada" type="button">
           Aplicadas <span class="filter-count" id="count-aplicada">0</span>
+        </button>
+        <button class="filter-chip" data-filter="cerrada" type="button">
+          Cerradas <span class="filter-count" id="count-cerrada">0</span>
         </button>
         <button class="filter-chip" data-filter="descartada" type="button">
           Descartadas <span class="filter-count" id="count-descartada">0</span>
@@ -946,12 +974,17 @@
     const state = {
       gmailEstado: "TOKEN_EXPIRED",
       gmailMensaje: "",
+      config: {
+        owner_name: "",
+        workspace_label: "Panel semiautomático local"
+      },
       candidaturas: [],
       conteos: {
         todas: 0,
         lista_para_aplicar: 0,
         pendiente_ia: 0,
         aplicada: 0,
+        cerrada: 0,
         descartada: 0
       },
       filter: "todas",
@@ -962,6 +995,7 @@
       pendiente_ia: "Pendiente de análisis",
       lista_para_aplicar: "Lista para aplicar",
       aplicada: "Aplicada",
+      cerrada: "Cerrada",
       descartada: "Descartada"
     };
 
@@ -1009,6 +1043,14 @@
     }
 
     function renderHeader() {
+      const owner = (state.config && state.config.owner_name || "").trim();
+      const wsLabel = (state.config && state.config.workspace_label || "Panel semiautomático local").trim();
+      const subtitleEl = $("workspaceSubtitle");
+      if (subtitleEl) {
+        subtitleEl.textContent = owner ? `${owner} · ${wsLabel}` : wsLabel;
+      }
+      document.title = owner ? `Radar Candidaturas · ${owner}` : "Radar Candidaturas";
+
       const pill = $("gmailPill");
       const pillText = $("gmailPillText");
       const banner = $("tokenBanner");
@@ -1060,7 +1102,16 @@
       let cls = "badge-estado";
       if (estado === "lista_para_aplicar") cls += " is-lista";
       else if (estado === "aplicada") cls += " is-aplicada";
+      else if (estado === "cerrada") cls += " is-cerrada";
       return `<span class="badge ${cls}">${escapeHtml(label)}</span>`;
+    }
+
+    function diffDaysIso(startIso, endIso) {
+      if (!startIso || !endIso) return null;
+      const a = Date.parse(`${startIso.slice(0, 10)}T00:00:00Z`);
+      const b = Date.parse(`${endIso.slice(0, 10)}T00:00:00Z`);
+      if (Number.isNaN(a) || Number.isNaN(b)) return null;
+      return Math.max(0, Math.round((b - a) / 86400000));
     }
 
     function renderCards() {
@@ -1086,7 +1137,15 @@
         const url = safeUrl(item.url_oferta);
         const hasPdf = Boolean(item.ruta_pdf_cv);
         const isReadyOrApplied = item.estado === "lista_para_aplicar" || item.estado === "aplicada" || Boolean(item.carta_presentacion || item.horquilla_salarial || hasPdf);
+        const isClosed = item.estado === "cerrada";
+        const isDiscarded = item.estado === "descartada";
+        const isApplied = item.estado === "aplicada";
+        const disableQuickActions = isDiscarded || isClosed;
         const fechaAplicacion = item.fecha_aplicacion ? ` · Aplicada: ${escapeHtml(item.fecha_aplicacion)}` : "";
+        const diasCierre = isClosed ? diffDaysIso(item.fecha, item.fecha_cierre) : null;
+        const fechaCierre = (isClosed && item.fecha_cierre)
+          ? ` · Cerrada: ${escapeHtml(item.fecha_cierre)}${diasCierre !== null ? ` (${diasCierre}d)` : ""}`
+          : "";
 
         return `
           <article class="card" data-id="${id}">
@@ -1096,7 +1155,7 @@
                 <h3 class="card-role">${escapeHtml(item.puesto || "Puesto sin título")}</h3>
                 <div class="card-meta">
                   <span>${escapeHtml(item.modalidad || "Por confirmar")}</span>
-                  <span>· Detectada: ${escapeHtml(item.fecha || "—")}${fechaAplicacion}</span>
+                  <span>· Detectada: ${escapeHtml(item.fecha || "—")}${fechaAplicacion}${fechaCierre}</span>
                 </div>
               </div>
               <div class="badges">
@@ -1105,7 +1164,13 @@
               </div>
             </div>
 
-            ${item.estado === "descartada" && item.motivo_descarte ? `
+            ${isClosed ? `
+              <div class="closed-notice">
+                <strong>Oferta cerrada:</strong> Ya no acepta solicitudes en el portal${diasCierre !== null ? ` (${diasCierre} día${diasCierre === 1 ? "" : "s"} desde la detección)` : ""}.
+              </div>
+            ` : ""}
+
+            ${isDiscarded && item.motivo_descarte ? `
               <div class="discard-reason">
                 <strong>Motivo de descarte:</strong> ${escapeHtml(item.motivo_descarte)}
               </div>
@@ -1200,10 +1265,13 @@
 
               <div class="status-actions">
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                  <button class="btn ok sm" type="button" data-set-estado="aplicada" data-id="${id}">
+                  <button class="btn ok sm" type="button" data-set-estado="aplicada" data-id="${id}" ${disableQuickActions || isApplied ? "disabled" : ""}>
                     ✓ Marcar Aplicada
                   </button>
-                  <button class="btn danger sm" type="button" data-set-estado="descartada" data-id="${id}">
+                  <button class="btn cerrada sm" type="button" data-set-estado="cerrada" data-id="${id}" ${disableQuickActions ? "disabled" : ""} title="Ya no se aceptan solicitudes en la oferta">
+                    ⏱ Cerrada
+                  </button>
+                  <button class="btn danger sm" type="button" data-set-estado="descartada" data-id="${id}" ${disableQuickActions ? "disabled" : ""}>
                     ✕ Descartar
                   </button>
                 </div>
@@ -1212,6 +1280,7 @@
                   <option value="pendiente_ia" ${item.estado === "pendiente_ia" ? "selected" : ""}>Pendiente de análisis</option>
                   <option value="lista_para_aplicar" ${item.estado === "lista_para_aplicar" ? "selected" : ""}>Lista para aplicar</option>
                   <option value="aplicada" ${item.estado === "aplicada" ? "selected" : ""}>Aplicada</option>
+                  <option value="cerrada" ${item.estado === "cerrada" ? "selected" : ""}>Cerrada (sin solicitudes)</option>
                   <option value="descartada" ${item.estado === "descartada" ? "selected" : ""}>Descartada</option>
                 </select>
               </div>
@@ -1233,6 +1302,9 @@
         const data = await res.json();
         state.gmailEstado = data.gmail_estado || "TOKEN_EXPIRED";
         state.gmailMensaje = data.gmail_mensaje || "";
+        if (data.config && typeof data.config === "object") {
+          state.config = data.config;
+        }
         state.candidaturas = Array.isArray(data.candidaturas) ? data.candidaturas : [];
         state.conteos = data.conteos || state.conteos;
         renderAll();
@@ -1361,7 +1433,7 @@
       }
 
       const stateBtn = e.target.closest("[data-set-estado]");
-      if (stateBtn) {
+      if (stateBtn && !stateBtn.disabled) {
         const id = stateBtn.dataset.id;
         const nuevoEstado = stateBtn.dataset.setEstado;
         const input = document.querySelector(`[data-notes-input="${CSS.escape(id)}"]`);
@@ -1375,10 +1447,15 @@
             payload.motivo_descarte = "Descartada manualmente desde el dashboard.";
           }
         }
+        const msgByEstado = {
+          aplicada: "Marcada como Aplicada (fecha registrada).",
+          cerrada: "Marcada como Cerrada (ya no acepta solicitudes).",
+          descartada: "Candidatura descartada."
+        };
         updateCandidatura(
           id,
           payload,
-          nuevoEstado === "aplicada" ? "Marcada como Aplicada (fecha registrada)." : "Candidatura descartada."
+          msgByEstado[nuevoEstado] || "Estado actualizado."
         );
       }
     });
