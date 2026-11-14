@@ -1,6 +1,9 @@
 credentials.json
 token.json
 candidaturas.json
+config.local.json
+perfiles/
+clientes_b2b/
 browser_session/
 salidas/
 .venv/

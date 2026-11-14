@@ -1,0 +1,7 @@
+{
+  "owner_name": "Candidato",
+  "workspace_label": "Panel semiautomático local",
+  "cv_pdf_filename": "CV_Adaptado.pdf",
+  "gmail_query": "from:linkedin.com newer_than:5d",
+  "data_dir": "."
+}
