@@ -5,6 +5,7 @@ import base64
 from datetime import date, datetime, timedelta
 import html as html_lib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -23,17 +24,56 @@ from pydantic import BaseModel, Field
 import uvicorn
 
 BASE_DIR = Path(__file__).resolve().parent
-CREDENTIALS_PATH = BASE_DIR / "credentials.json"
-TOKEN_PATH = BASE_DIR / "token.json"
-CANDIDATURAS_PATH = BASE_DIR / "candidaturas.json"
 DASHBOARD_PATH = BASE_DIR / "dashboard.html"
-BROWSER_SESSION_DIR = BASE_DIR / "browser_session"
-SALIDAS_DIR = BASE_DIR / "salidas"
+
+DEFAULT_CONFIG: dict[str, str] = {
+    "owner_name": "Candidato",
+    "workspace_label": "Panel semiautomático local",
+    "cv_pdf_filename": "CV_Adaptado.pdf",
+    "gmail_query": "from:linkedin.com newer_than:5d",
+    "data_dir": ".",
+}
+
+
+def _load_config() -> dict[str, str]:
+    config = dict(DEFAULT_CONFIG)
+    candidates: list[Path] = []
+    env_cfg = os.environ.get("RADAR_CONFIG", "").strip()
+    if env_cfg:
+        cfg_path = Path(env_cfg)
+        candidates.append(cfg_path if cfg_path.is_absolute() else (BASE_DIR / cfg_path))
+    else:
+        candidates.extend([BASE_DIR / "config.local.json", BASE_DIR / "config.example.json"])
+
+    for path in candidates:
+        if path.exists():
+            try:
+                raw = json.loads(path.read_text(encoding="utf-8-sig"))
+                if isinstance(raw, dict):
+                    for key in DEFAULT_CONFIG:
+                        val = raw.get(key)
+                        if isinstance(val, str) and val.strip():
+                            config[key] = val.strip()
+                break
+            except Exception:
+                pass
+    return config
+
+
+APP_CONFIG = _load_config()
+_raw_data_dir = Path(os.environ.get("RADAR_DATA_DIR", "").strip() or APP_CONFIG["data_dir"])
+DATA_DIR = (_raw_data_dir if _raw_data_dir.is_absolute() else (BASE_DIR / _raw_data_dir)).resolve()
+
+CREDENTIALS_PATH = DATA_DIR / "credentials.json"
+TOKEN_PATH = DATA_DIR / "token.json"
+CANDIDATURAS_PATH = DATA_DIR / "candidaturas.json"
+BROWSER_SESSION_DIR = DATA_DIR / "browser_session"
+SALIDAS_DIR = DATA_DIR / "salidas"
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
-GMAIL_QUERY = "from:linkedin.com newer_than:5d"
+GMAIL_QUERY = APP_CONFIG["gmail_query"]
 
-VALID_ESTADOS = {"pendiente_ia", "lista_para_aplicar", "aplicada", "descartada"}
+VALID_ESTADOS = {"pendiente_ia", "lista_para_aplicar", "aplicada", "cerrada", "descartada"}
 
 _DATA_LOCK = threading.Lock()
 _OAUTH_LOCK = threading.Lock()
@@ -74,6 +114,7 @@ class LimpiarPayload(BaseModel):
 
 
 def _ensure_storage() -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     if not CANDIDATURAS_PATH.exists():
         CANDIDATURAS_PATH.write_text("[]\n", encoding="utf-8")
 
@@ -126,6 +167,7 @@ def _build_counts(items: list[dict[str, Any]]) -> dict[str, int]:
         "lista_para_aplicar": 0,
         "pendiente_ia": 0,
         "aplicada": 0,
+        "cerrada": 0,
         "descartada": 0,
     }
     for item in items:
@@ -165,6 +207,7 @@ def _new_candidatura(
         "descripcion": descripcion.strip(),
         "origen": origen,
         "fecha_aplicacion": "",
+        "fecha_cierre": "",
     }
 
 
@@ -320,6 +363,10 @@ def _scrape_linkedin_jobs_sync(urls: list[str]) -> tuple[list[dict[str, Any]], b
             for url in urls:
                 try:
                     page.goto(url, wait_until="domcontentloaded", timeout=25000)
+                    try:
+                        page.wait_for_selector("main, h1, .jobs-description__content", timeout=8000)
+                    except Exception:
+                        pass
                     page.wait_for_timeout(2200)
 
                     current_url = page.url.lower()
@@ -345,7 +392,7 @@ def _scrape_linkedin_jobs_sync(urls: list[str]) -> tuple[list[dict[str, Any]], b
                         continue
 
                     data = page.evaluate(
-                        """() => {
+                        r"""() => {
                           const pick = (selectors) => {
                             for (const sel of selectors) {
                               const el = document.querySelector(sel);
@@ -356,7 +403,7 @@ def _scrape_linkedin_jobs_sync(urls: list[str]) -> tuple[list[dict[str, Any]], b
                             return "";
                           };
 
-                          const title = pick([
+                          let title = pick([
                             ".job-details-jobs-unified-top-card__job-title h1",
                             ".job-details-jobs-unified-top-card__job-title",
                             "h1.top-card-layout__title",
@@ -364,21 +411,21 @@ def _scrape_linkedin_jobs_sync(urls: list[str]) -> tuple[list[dict[str, Any]], b
                             "h1"
                           ]);
 
-                          const company = pick([
+                          let company = pick([
                             ".job-details-jobs-unified-top-card__company-name a",
                             ".job-details-jobs-unified-top-card__company-name",
                             "a.topcard__org-name-link",
                             ".topcard__flavor-row .topcard__flavor"
                           ]);
 
-                          const meta = pick([
+                          let meta = pick([
                             ".job-details-jobs-unified-top-card__primary-description-container",
                             ".job-details-jobs-unified-top-card__tertiary-description-container",
                             ".topcard__flavor-row",
                             ".job-details-fit-level-preferences"
                           ]);
 
-                          const description = pick([
+                          let description = pick([
                             ".jobs-description__content .jobs-box__html-content",
                             ".jobs-description-content__text",
                             ".jobs-description__content",
@@ -386,12 +433,46 @@ def _scrape_linkedin_jobs_sync(urls: list[str]) -> tuple[list[dict[str, Any]], b
                             ".description__text"
                           ]);
 
+                          const docTitle = document.title || "";
+                          const mainEl = document.querySelector("main");
+                          const mainText = mainEl ? (mainEl.innerText || "").trim() : "";
+
+                          if ((!title || !company) && docTitle.includes("|")) {
+                            const parts = docTitle.split("|").map(s => s.trim()).filter(Boolean);
+                            if (parts.length >= 3 && /linkedin/i.test(parts[parts.length - 1])) {
+                              if (!title) title = parts[0];
+                              if (!company) company = parts[parts.length - 2];
+                            }
+                          }
+
+                          if (mainText) {
+                            const lines = mainText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                            if (!meta) {
+                              const stopIdx = lines.findIndex(l => /^(solicitar|apply|guardar|save|usa la ia|people you can)/i.test(l));
+                              meta = lines.slice(0, stopIdx > 0 ? Math.min(stopIdx, 8) : 6).join("\n");
+                            }
+                            if (!description) {
+                              const startMatch = mainText.match(/\n(?:Acerca del empleo|About the job)\s*\n/i);
+                              if (startMatch && startMatch.index !== undefined) {
+                                let after = mainText.slice(startMatch.index + startMatch[0].length);
+                                const endMatch = after.match(/\n(?:Establecer una alerta|Set alert for similar|Acerca de la empresa|About the company|Más empleos|More jobs)\b/i);
+                                if (endMatch && endMatch.index !== undefined) {
+                                  after = after.slice(0, endMatch.index);
+                                }
+                                description = after.trim();
+                              }
+                            }
+                          }
+
+                          const isClosed = /ya no se aceptan solicitudes|no longer accepting applications/i.test(mainText);
+
                           return {
                             title,
                             company,
                             meta,
                             description,
-                            docTitle: document.title || ""
+                            docTitle,
+                            isClosed
                           };
                         }"""
                     )
@@ -423,6 +504,7 @@ def _scrape_linkedin_jobs_sync(urls: list[str]) -> tuple[list[dict[str, Any]], b
                             "modalidad": modalidad,
                             "descripcion": descripcion or meta_text,
                             "authwall": False,
+                            "cerrada": bool(data.get("isClosed")),
                         }
                     )
                 except Exception as exc:
@@ -510,6 +592,9 @@ def _scan_gmail_and_linkedin_sync(creds: Credentials) -> dict[str, Any]:
             descripcion=item["descripcion"],
             origen="gmail+linkedin",
         )
+        if item.get("cerrada"):
+            entry["estado"] = "cerrada"
+            entry["fecha_cierre"] = date.today().isoformat()
         candidaturas.insert(0, entry)
         added_count += 1
 
@@ -541,6 +626,11 @@ async def get_estado() -> JSONResponse:
         {
             "gmail_estado": gmail_estado,
             "gmail_mensaje": gmail_mensaje,
+            "config": {
+                "owner_name": APP_CONFIG["owner_name"],
+                "workspace_label": APP_CONFIG["workspace_label"],
+                "cv_pdf_filename": APP_CONFIG["cv_pdf_filename"],
+            },
             "candidaturas": candidaturas,
             "conteos": _build_counts(candidaturas),
         }
@@ -660,6 +750,10 @@ async def post_actualizar(item_id: str, payload: ActualizarPayload) -> JSONRespo
         target["estado"] = payload.estado
         if payload.estado == "aplicada" and not target.get("fecha_aplicacion"):
             target["fecha_aplicacion"] = date.today().isoformat()
+        if payload.estado == "cerrada" and not target.get("fecha_cierre"):
+            target["fecha_cierre"] = date.today().isoformat()
+        if payload.estado in {"pendiente_ia", "lista_para_aplicar"}:
+            target["fecha_cierre"] = ""
         if payload.estado == "descartada" and not target.get("viabilidad"):
             target["viabilidad"] = "Descartada"
 
@@ -693,9 +787,9 @@ async def get_cv_pdf(item_id: str) -> FileResponse:
             status_code=404, detail="Esta candidatura aún no tiene un CV PDF asignado."
         )
 
-    pdf_path = (BASE_DIR / ruta_rel).resolve()
+    pdf_path = (DATA_DIR / ruta_rel).resolve()
     salidas_root = SALIDAS_DIR.resolve()
-    if not pdf_path.is_relative_to(salidas_root) and pdf_path.parent != BASE_DIR.resolve():
+    if not pdf_path.is_relative_to(salidas_root) and pdf_path.parent != DATA_DIR:
         raise HTTPException(status_code=403, detail="Ruta de PDF no permitida.")
 
     if not pdf_path.exists() or pdf_path.suffix.lower() != ".pdf":
@@ -726,7 +820,7 @@ def _salidas_subfolder(ruta_pdf_cv: str) -> Path | None:
     if not ruta_rel:
         return None
     salidas_root = SALIDAS_DIR.resolve()
-    target = (BASE_DIR / ruta_rel).resolve()
+    target = (DATA_DIR / ruta_rel).resolve()
     if not target.is_relative_to(salidas_root) or target == salidas_root:
         return None
     rel_parts = target.relative_to(salidas_root).parts
@@ -831,4 +925,6 @@ async def post_limpiar(payload: LimpiarPayload) -> JSONResponse:
 
 if __name__ == "__main__":
     _ensure_storage()
-    uvicorn.run(app, host="127.0.0.1", port=8090, log_level="info")
+    host = os.environ.get("RADAR_HOST", "127.0.0.1")
+    port = int(os.environ.get("RADAR_PORT", "8090"))
+    uvicorn.run(app, host=host, port=port, log_level="info")

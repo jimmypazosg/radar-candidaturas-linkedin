@@ -3,14 +3,16 @@ setlocal EnableExtensions
 
 REM Uso:
 REM   compilar_pdf.bat [ruta_html_entrada] [ruta_pdf_salida]
-REM Sin argumentos, compila plantilla_cv.html -> CV_Jimmy_Pazos.pdf en el directorio actual.
+REM Sin argumentos, compila plantilla_cv.html -> %RADAR_CV_FILENAME% (o CV_Adaptado.pdf) en el directorio actual.
+
+if not defined RADAR_CV_FILENAME set "RADAR_CV_FILENAME=CV_Adaptado.pdf"
 
 set "INPUT_HTML=%~1"
 if "%INPUT_HTML%"=="" set "INPUT_HTML=%cd%\plantilla_cv.html"
 
 set "OUTPUT_PDF=%~2"
-if "%OUTPUT_PDF%"=="" set "OUTPUT_PDF=%~dp1CV_Jimmy_Pazos.pdf"
-if "%~1"=="" set "OUTPUT_PDF=%cd%\CV_Jimmy_Pazos.pdf"
+if "%OUTPUT_PDF%"=="" set "OUTPUT_PDF=%~dp1%RADAR_CV_FILENAME%"
+if "%~1"=="" set "OUTPUT_PDF=%cd%\%RADAR_CV_FILENAME%"
 
 if not exist "%INPUT_HTML%" (
   echo [ERROR] No se encuentra el HTML de entrada: "%INPUT_HTML%"
